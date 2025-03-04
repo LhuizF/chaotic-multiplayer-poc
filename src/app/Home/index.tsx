@@ -1,9 +1,10 @@
 import { useState } from "react"
 import { useCreateGame } from "./hooks/useCreateGame"
+import { LoadingScreen } from '@/components/LoadingScreen'
 
 export const Home = () => {
   const [playerName, setPlayerName] = useState('')
-  const { createGame, erroName, setErroName } = useCreateGame({ playerName })
+  const { createGame, erroName, setErroName, isLoading } = useCreateGame({ playerName })
 
   return (
     <main className="flex flex-col items-center justify-center h-screen">
@@ -32,6 +33,8 @@ export const Home = () => {
           Criar partida
         </button>
       </fieldset>
+
+      {isLoading && <LoadingScreen />}
     </main>
   )
 }

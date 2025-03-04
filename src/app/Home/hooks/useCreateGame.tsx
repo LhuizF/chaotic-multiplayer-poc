@@ -1,6 +1,8 @@
-import { realtimeService } from '@/services/RealtimeService'
+import { firestoreService } from '@/services/FirestoreService'
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
+import { useNavigate } from 'react-router-dom'
+import { sessionService } from '@/services/SessionService';
 
 interface UseCreateGameProps {
   playerName: string
@@ -9,6 +11,8 @@ interface UseCreateGameProps {
 export function useCreateGame({ playerName }: UseCreateGameProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [erroName, setErroName] = useState(false)
+
+  const navigate = useNavigate()
 
   const createGame = async () => {
     if (!playerName || playerName.length < 3) {
@@ -21,10 +25,11 @@ export function useCreateGame({ playerName }: UseCreateGameProps) {
     const id = uuid()
     setIsLoading(true)
 
-    const playerId = uuid()
+    const player = sessionService.getUser()
+    const playerId = player ? player.id : uuid()
 
     try {
-      realtimeService.create(id, {
+      await firestoreService.create(id, {
         createdAt: new Date().toISOString(),
         players: {
           [playerId]: {
@@ -33,8 +38,13 @@ export function useCreateGame({ playerName }: UseCreateGameProps) {
           }
         }
       })
+
+      sessionService.saveUser(playerId, playerName)
+      navigate(`/game/${id}`)
     } catch (error) {
       console.error(error)
+      setIsLoading(false)
+      alert('Erro ao criar a partida :(')
     }
   }
 
