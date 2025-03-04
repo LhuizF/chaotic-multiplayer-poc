@@ -1,7 +1,37 @@
+import { useState } from "react"
+import { useCreateGame } from "./hooks/useCreateGame"
+
 export const Home = () => {
+  const [playerName, setPlayerName] = useState('')
+  const { createGame, erroName, setErroName } = useCreateGame({ playerName })
+
   return (
     <main className="flex flex-col items-center justify-center h-screen">
-      main
+
+      <fieldset className="fieldset w-96 bg-base-200 p-4 rounded-box">
+        <p className="text-2xl text-center mb-2">Bem-vindo ao jogo</p>
+        <div className="mb-2">
+          <input
+            type="text"
+            placeholder="Seu nome"
+            className={`input focus:outline-none ${erroName ? 'input-error' : ''}`}
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            onFocus={() => setErroName(false)}
+          />
+        </div>
+
+
+        <p className="text-base">Entre em uma partida já criada</p>
+        <div className="join">
+          <input type="text" className="input join-item focus:outline-none" placeholder="Id da partida" />
+          <button className="btn btn-primary join-item">Entrar</button>
+        </div>
+        <div className="divider">OU</div>
+        <button className="btn btn-primary" onClick={createGame}>
+          Criar partida
+        </button>
+      </fieldset>
     </main>
   )
 }
