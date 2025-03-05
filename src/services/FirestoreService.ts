@@ -6,13 +6,16 @@ interface Player {
   playerName: string
 }
 
-interface Game {
+export type GameStatus = 'waiting' | 'playing' | 'finished'
+
+export interface Game {
   id: string
   createdAt: string
   players: {
     [key: string]: Player
   }
-  status: 'waiting' | 'playing' | 'finished'
+  status: GameStatus
+  turn: string
 }
 
 class FirestoreService {
@@ -29,7 +32,8 @@ class FirestoreService {
       players: {
         [player.id]: player
       },
-      status: 'waiting'
+      status: 'waiting',
+      turn: player.id
     }
 
     const matchRef = doc(this.database, 'games', id);
@@ -62,6 +66,7 @@ class FirestoreService {
 
         await setDoc(gameRef, {
           ...game,
+          status: 'playing',
           players: newPlayers
         });
 
@@ -74,12 +79,12 @@ class FirestoreService {
     return false;
   }
 
-  listenGame(id: string, callback: (gameData: any) => void) {
+  listenGame(id: string, callback: (gameData: Game) => void) {
     const gameRef = doc(this.database, 'games', id);
 
     return onSnapshot(gameRef, (snapshot) => {
       if (snapshot.exists()) {
-        callback(snapshot.data());
+        callback(snapshot.data() as Game);
       }
     });
   }

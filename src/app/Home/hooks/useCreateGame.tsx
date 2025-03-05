@@ -35,7 +35,7 @@ export function useCreateGame({ playerName }: UseCreateGameProps) {
       })
 
       sessionService.saveUser({ id: playerId, playerName })
-      navigate(`/game/${gameId}`)
+      navigate(`/waiting/${gameId}`)
     } catch (error) {
       console.error(error)
       setIsLoading(false)
