@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom'
 
 export function useJoinGame(gameId: string) {
-  const [error, setError] = useState<boolean>(false)
+  const [error, setError] = useState<string>('')
   const [errorName, setErrorName] = useState<boolean>(false)
   const [playerName, setPlayerName] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -16,19 +16,19 @@ export function useJoinGame(gameId: string) {
     setIsLoading(true)
     const gameData = await firestoreService.getGame(gameId)
     if (!gameData) {
-      setError(true)
+      setError('Partida não encontrada')
       return
     }
 
     if (gameData.status !== 'waiting') {
-      setError(true)
+      setError('Convite inválido')
       return
     }
 
     const totalPlayers = Object.keys(gameData.players).length
 
     if (totalPlayers !== 1) {
-      setError(true)
+      setError('Partida cheia')
       return
     }
     setIsLoading(false)
@@ -53,13 +53,14 @@ export function useJoinGame(gameId: string) {
       })
 
       if (!isJoin) {
-        setError(true)
+        setError('Erro ao entrar na partida')
         return
       }
+
       navigate(`/game/${gameId}`)
     } catch (error) {
       console.error(error)
-      alert('Erro ao entrar na partida :(')
+      setError('Erro ao entrar na partida')
     } finally {
       setIsLoading(false)
     }
@@ -68,7 +69,6 @@ export function useJoinGame(gameId: string) {
   useEffect(() => {
     getGame()
   }, [getGame])
-
 
   const cleanErrorName = () => {
     setErrorName(false)

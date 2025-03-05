@@ -19,7 +19,7 @@ export const JoinGameContent = ({ gameId }: JoinGameContentProps) => {
   } = useJoinGame(gameId)
 
   if (error) {
-    return <GameNotFound />
+    return <GameNotFound text={error} />
   }
 
   return (

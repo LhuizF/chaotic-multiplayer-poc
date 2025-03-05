@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { firestoreService, Game } from '@/services/FirestoreService'
+import { useNavigate } from "react-router-dom";
 
 interface UseGetGameStatus {
   gameId: string
@@ -10,6 +11,8 @@ export function useGetGameStatus({ gameId, userId }: UseGetGameStatus) {
   const [error, setError] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [game, setGame] = useState<Game | null>(null)
+
+  const navigate = useNavigate()
 
   const gameStatus = game?.status || null
 
@@ -45,7 +48,9 @@ export function useGetGameStatus({ gameId, userId }: UseGetGameStatus) {
     if (!game) return
 
     const unsubscribe = firestoreService.listenGame(gameId, (updatedGame) => {
-      console.log('game updated', updatedGame)
+      if (updatedGame && updatedGame.status === 'playing') {
+        navigate(`/game/${gameId}`)
+      }
     })
 
     return () => unsubscribe()
