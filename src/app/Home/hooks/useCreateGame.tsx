@@ -22,25 +22,20 @@ export function useCreateGame({ playerName }: UseCreateGameProps) {
 
     if (isLoading) return
 
-    const id = uuid()
+    const gameId = uuid()
     setIsLoading(true)
 
     const player = sessionService.getUser()
     const playerId = player ? player.id : uuid()
 
     try {
-      await firestoreService.create(id, {
-        createdAt: new Date().toISOString(),
-        players: {
-          [playerId]: {
-            id: playerId,
-            playerName
-          }
-        }
+      await firestoreService.create(gameId, {
+        id: playerId,
+        playerName
       })
 
-      sessionService.saveUser(playerId, playerName)
-      navigate(`/game/${id}`)
+      sessionService.saveUser({ id: playerId, playerName })
+      navigate(`/game/${gameId}`)
     } catch (error) {
       console.error(error)
       setIsLoading(false)

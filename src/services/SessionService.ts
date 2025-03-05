@@ -1,9 +1,14 @@
+interface User {
+  id: string;
+  playerName: string;
+}
+
 class SessionService {
-  saveUser(id: string, name: string) {
-    localStorage.setItem('user', JSON.stringify({ id, name }));
+  saveUser(user: User): void {
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
-  getUser(): { id: string; name: string } | null {
+  getUser(): User | null {
     const user = localStorage.getItem('user');
     if (!user) return null;
     return JSON.parse(user);

@@ -1,14 +1,18 @@
-import { Firestore, doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { Firestore, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
 import { firestore } from './firebase'
 
-interface GameInitPayload {
+interface Player {
+  id: string
+  playerName: string
+}
+
+interface Game {
+  id: string
   createdAt: string
   players: {
-    [key: string]: {
-      id: string
-      playerName: string
-    }
+    [key: string]: Player
   }
+  status: 'waiting' | 'playing' | 'finished'
 }
 
 class FirestoreService {
@@ -18,9 +22,29 @@ class FirestoreService {
     this.database = database
   }
 
-  async create(id: string, data: GameInitPayload) {
+  async create(id: string, player: Player) {
+    const data: Game = {
+      id,
+      createdAt: new Date().toISOString(),
+      players: {
+        [player.id]: player
+      },
+      status: 'waiting'
+    }
+
     const matchRef = doc(this.database, 'games', id);
     await setDoc(matchRef, data);
+  }
+
+  async getGame(id: string): Promise<Game | null> {
+    const gameRef = doc(this.database, 'games', id);
+    const gameSnapshot = await getDoc(gameRef);
+
+    if (gameSnapshot.exists()) {
+      return gameSnapshot.data() as Game;
+    }
+
+    return null;
   }
 
   listenGame(id: string, callback: (gameData: any) => void) {
