@@ -9,5 +9,5 @@ export const JoinGame = () => {
     return <GameNotFound />
   }
 
-  return <JoinGameContent id={id} />
+  return <JoinGameContent gameId={id} />
 }

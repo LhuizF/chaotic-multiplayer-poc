@@ -1,12 +1,12 @@
-import { useGetGame } from "./hooks/useGetGame"
+import { useJoinGame } from "./hooks/useJoinGame"
 import { LoadingScreen } from '@/components/LoadingScreen'
 import { GameNotFound } from '@/components/GameNotFound'
 
 interface JoinGameContentProps {
-  id: string
+  gameId: string
 }
 
-export const JoinGameContent = ({ id }: JoinGameContentProps) => {
+export const JoinGameContent = ({ gameId }: JoinGameContentProps) => {
 
   const {
     error,
@@ -16,7 +16,7 @@ export const JoinGameContent = ({ id }: JoinGameContentProps) => {
     setPlayerName,
     cleanErrorName,
     isLoading
-  } = useGetGame(id)
+  } = useJoinGame(gameId)
 
   if (error) {
     return <GameNotFound />
@@ -30,7 +30,7 @@ export const JoinGameContent = ({ id }: JoinGameContentProps) => {
           <input
             type="text"
             placeholder="Seu nome"
-            className={`input focus:outline-none ${errorName ? 'input-error' : ''}`}
+            className={`input w-full focus:outline-none ${errorName ? 'input-error' : ''}`}
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
             onFocus={cleanErrorName}

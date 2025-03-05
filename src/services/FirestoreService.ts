@@ -47,6 +47,33 @@ class FirestoreService {
     return null;
   }
 
+  async joinGame(id: string, player: Player): Promise<boolean> {
+    const gameRef = doc(this.database, 'games', id);
+    const gameSnapshot = await getDoc(gameRef);
+
+    if (gameSnapshot.exists()) {
+      const game = gameSnapshot.data() as Game;
+
+      if (game.status === 'waiting') {
+        const newPlayers = {
+          ...game.players,
+          [player.id]: player
+        }
+
+        await setDoc(gameRef, {
+          ...game,
+          players: newPlayers
+        });
+
+        return true;
+      }
+
+      return false;
+    }
+
+    return false;
+  }
+
   listenGame(id: string, callback: (gameData: any) => void) {
     const gameRef = doc(this.database, 'games', id);
 
@@ -54,8 +81,7 @@ class FirestoreService {
       if (snapshot.exists()) {
         callback(snapshot.data());
       }
-    }
-    );
+    });
   }
 }
 
