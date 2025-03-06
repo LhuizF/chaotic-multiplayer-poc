@@ -18,7 +18,7 @@ export interface Game {
   turn: string
 }
 
-class FirestoreService {
+export class FirestoreService {
   private readonly database: Firestore
 
   constructor(database: Firestore) {
@@ -87,6 +87,20 @@ class FirestoreService {
         callback(snapshot.data() as Game);
       }
     });
+  }
+
+  async passTurn(id: string, nextPlayerId: string) {
+    const gameRef = doc(this.database, 'games', id);
+    const gameSnapshot = await getDoc(gameRef);
+
+    if (gameSnapshot.exists()) {
+      const game = gameSnapshot.data() as Game;
+
+      await setDoc(gameRef, {
+        ...game,
+        turn: nextPlayerId
+      });
+    }
   }
 }
 

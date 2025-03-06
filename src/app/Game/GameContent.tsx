@@ -1,14 +1,18 @@
-import { useGameListener } from "./hooks/useGameListener";
-import { sessionService } from "@/services/SessionService";
+import { useGameStarted } from "./hooks/useGameStarted";
+import { User } from "@/services/SessionService";
 import { GameNotFound } from "@/components/GameNotFound";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { GameContextProvider } from './context/GameContext'
+import { firestoreService } from "@/services/FirestoreService";
+import { MainGame } from "./components/MainGame";
 
 interface GameContentProps {
   id: string;
+  user: User
 }
-export const GameContent = ({ id }: GameContentProps) => {
-  const user = sessionService.getUser();
-  const { gameMatch, isLoading, error } = useGameListener({ gameId: id, userId: user?.id || '' });
+
+export const GameContent = ({ id, user }: GameContentProps) => {
+  const { isLoading, error } = useGameStarted({ gameId: id, userId: user.id });
 
   if (error) {
     return <GameNotFound text={error} />
@@ -19,14 +23,10 @@ export const GameContent = ({ id }: GameContentProps) => {
   }
 
   return (
-    <main>
-      <h1>Game {id}</h1>
-      {gameMatch && (
-        <div>
-          <p>Adversary: {gameMatch.adversary.name}</p>
-          <p>Your turn: {gameMatch.isYourTurn ? 'Yes' : 'No'}</p>
-        </div>
-      )}
+    <main className="flex flex-col items-center justify-center h-screen">
+      <GameContextProvider gameId={id} userId={user.id} firestoreService={firestoreService}>
+        <MainGame />
+      </GameContextProvider>
     </main>
   );
 }
