@@ -7,7 +7,6 @@ interface JoinGameContentProps {
 }
 
 export const JoinGameContent = ({ gameId }: JoinGameContentProps) => {
-
   const {
     error,
     handleJoinGame,
@@ -16,7 +15,7 @@ export const JoinGameContent = ({ gameId }: JoinGameContentProps) => {
     setPlayerName,
     cleanErrorName,
     isLoading
-  } = useJoinGame(gameId)
+  } = useJoinGame({ gameId })
 
   if (error) {
     return <GameNotFound text={error} />

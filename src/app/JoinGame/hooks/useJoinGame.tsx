@@ -4,7 +4,11 @@ import { sessionService } from "@/services/SessionService";
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom'
 
-export function useJoinGame(gameId: string) {
+interface UseJoinGameProps {
+  gameId: string;
+}
+
+export function useJoinGame({ gameId }: UseJoinGameProps) {
   const [error, setError] = useState<string>('')
   const [errorName, setErrorName] = useState<boolean>(false)
   const [playerName, setPlayerName] = useState<string>('')
@@ -15,6 +19,7 @@ export function useJoinGame(gameId: string) {
   const getGame = useCallback(async () => {
     setIsLoading(true)
     const gameData = await firestoreService.getGame(gameId)
+
     if (!gameData) {
       setError('Partida não encontrada')
       return
@@ -25,7 +30,16 @@ export function useJoinGame(gameId: string) {
       return
     }
 
+    const userId = sessionService.getUser()?.id
+
     const totalPlayers = Object.keys(gameData.players).length
+
+    const inGame = Object.keys(gameData.players).includes(userId || '')
+
+    if (inGame) {
+      setError('Você já está na partida')
+      return
+    }
 
     if (totalPlayers !== 1) {
       setError('Partida cheia')
