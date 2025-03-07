@@ -6,12 +6,13 @@ type GameContextData = {
   gameMatch: GameMatch;
   isLoading: boolean;
   passTurn: () => Promise<void>;
+  userId: string;
 };
 
 const defaultGameMatch: GameMatch = {
   id: '',
   createdAt: '',
-  adversary: {
+  opponent: {
     id: '',
     name: ''
   },
@@ -23,7 +24,12 @@ const defaultGameMatch: GameMatch = {
   }
 };
 
-const GameContext = createContext<GameContextData>({ isLoading: true, gameMatch: defaultGameMatch, passTurn: async () => {} });
+const GameContext = createContext<GameContextData>({
+  isLoading: true,
+  gameMatch: defaultGameMatch,
+  passTurn: async () => {},
+  userId: ''
+});
 
 interface GameProviderProps {
   children: React.ReactNode;
@@ -43,9 +49,9 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
         return;
       }
 
-      const adversary = Object.values(gameData.players).find((player) => player.id !== userId);
+      const opponent = Object.values(gameData.players).find((player) => player.id !== userId);
 
-      if (!adversary) {
+      if (!opponent) {
         return;
       }
 
@@ -54,9 +60,9 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
       const match: GameMatch = {
         id: gameData.id,
         createdAt: gameData.createdAt,
-        adversary: {
-          id: adversary.id,
-          name: adversary.playerName
+        opponent: {
+          id: opponent.id,
+          name: opponent.playerName
         },
         status: gameData.status,
         isYourTurn,
@@ -76,11 +82,11 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
       return;
     }
 
-    await firestoreService.passTurn(gameId, gameMatch.adversary.id);
+    await firestoreService.passTurn(gameId, gameMatch.opponent.id);
   }
 
   return (
-    <GameContext.Provider value={{ gameMatch, isLoading, passTurn }}>
+    <GameContext.Provider value={{ gameMatch, isLoading, passTurn, userId }}>
       {children}
     </GameContext.Provider>
   );
