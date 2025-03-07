@@ -44,7 +44,7 @@ export const creatures: Creature[] = [
     power: 20
   },
   {
-    id: '1',
+    id: '5',
     name: 'Esqueleto',
     element: 'Earth',
     health: 80,

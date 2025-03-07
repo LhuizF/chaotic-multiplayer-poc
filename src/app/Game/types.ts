@@ -1,7 +1,7 @@
 export interface GameMatch {
   id: string
   createdAt: string
-  adversary: {
+  opponent: {
     id: string
     name: string
   }
@@ -26,7 +26,7 @@ export interface CreatureSelected extends Creature {
   position: { row: number, column: number }
 }
 
-interface Creature {
+export interface Creature {
   id: string
   name: string
   image: string
