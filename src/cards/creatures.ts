@@ -1,4 +1,13 @@
-import { Attack, Creature } from './types'
+export interface Creature {
+  id: string;
+  name: string;
+  image: string;
+  health: number;
+  element: Element;
+  power: number;
+}
+
+export type Element = 'Fire' | 'Water' | 'Earth' | 'Air';
 
 
 export const creatures: Creature[] = [

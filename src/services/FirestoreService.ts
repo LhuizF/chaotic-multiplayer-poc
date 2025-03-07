@@ -1,5 +1,6 @@
 import { Firestore, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
 import { firestore } from './firebase'
+import { creatures, Creature } from '@/cards/creatures'
 
 interface Player {
   id: string
@@ -16,6 +17,23 @@ export interface Game {
   }
   status: GameStatus
   turn: string
+  battlefield: Battlefield
+}
+
+interface CreatureSelected extends Creature {
+  position: { row: number, column: number }
+}
+
+interface Battlefield {
+  status: 'choosing_creatures'
+  players: {
+    [key: string]: {
+      creatures: {
+        initialCreatures: Creature[]
+        selectedCreatures: CreatureSelected[]
+      }
+    }
+  }
 }
 
 export class FirestoreService {
@@ -33,7 +51,8 @@ export class FirestoreService {
         [player.id]: player
       },
       status: 'waiting',
-      turn: player.id
+      turn: player.id,
+      battlefield: this.createBattlefield(player.id)
     }
 
     const matchRef = doc(this.database, 'games', id);
@@ -59,16 +78,28 @@ export class FirestoreService {
       const game = gameSnapshot.data() as Game;
 
       if (game.status === 'waiting') {
-        const newPlayers = {
-          ...game.players,
-          [player.id]: player
+        const gameUpdate: Game = {
+          ...game,
+          players: {
+            ...game.players,
+            [player.id]: player
+          },
+          status: 'playing',
+          battlefield: {
+            ...game.battlefield,
+            players: {
+              ...game.battlefield.players,
+              [player.id]: {
+                creatures: {
+                  initialCreatures: creatures,
+                  selectedCreatures: []
+                }
+              }
+            }
+          }
         }
 
-        await setDoc(gameRef, {
-          ...game,
-          status: 'playing',
-          players: newPlayers
-        });
+        await setDoc(gameRef, gameUpdate);
 
         return true;
       }
@@ -101,6 +132,22 @@ export class FirestoreService {
         turn: nextPlayerId
       });
     }
+  }
+
+  private createBattlefield(userId: string): Battlefield {
+    const battlefield: Battlefield = {
+      status: 'choosing_creatures',
+      players: {
+        [userId]: {
+          creatures: {
+            initialCreatures: creatures,
+            selectedCreatures: []
+          }
+        }
+      }
+    }
+
+    return battlefield;
   }
 }
 

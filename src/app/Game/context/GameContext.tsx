@@ -16,7 +16,11 @@ const defaultGameMatch: GameMatch = {
     name: ''
   },
   status: 'waiting',
-  isYourTurn: false
+  isYourTurn: false,
+  battlefield: {
+    status: 'choosing_creatures',
+    players: {}
+  }
 };
 
 const GameContext = createContext<GameContextData>({ isLoading: true, gameMatch: defaultGameMatch, passTurn: async () => {} });
@@ -55,7 +59,8 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
           name: adversary.playerName
         },
         status: gameData.status,
-        isYourTurn
+        isYourTurn,
+        battlefield: gameData.battlefield
       }
 
       setGameMatch(match);

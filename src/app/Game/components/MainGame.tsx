@@ -1,6 +1,5 @@
 import { useGame } from "../context/GameContext"
 
-
 export const MainGame = () => {
   const { gameMatch, passTurn } = useGame();
   return (
@@ -14,7 +13,6 @@ export const MainGame = () => {
           Passar a vez
         </button>
       )}
-
     </div>
   )
 }
