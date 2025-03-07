@@ -5,11 +5,11 @@ export interface User {
 
 class SessionService {
   saveUser(user: User): void {
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('chaotic-user', JSON.stringify(user));
   }
 
   getUser(): User | null {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem('chaotic-user');
     if (!user) return null;
     return JSON.parse(user);
   }
