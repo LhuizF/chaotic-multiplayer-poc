@@ -11,6 +11,7 @@ export const CreatureCard = ({ creature }: CreatureCardProps) => {
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
+    item: creature
   }))
 
   const visibility = isDragging ? 'hidden' : 'visible'

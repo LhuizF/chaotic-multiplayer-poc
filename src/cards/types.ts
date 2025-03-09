@@ -1,4 +1,3 @@
-
 export interface Attack {
   id: string;
   name: string;
