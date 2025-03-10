@@ -21,6 +21,7 @@ type GameContextData = {
     hand: Creature[]
   },
   getCardByPosition: (position: Position) => CreatureSelected | null
+  hasCardInPosition: (position: Position) => boolean
 };
 
 const defaultGameMatch: GameMatch = {
@@ -64,7 +65,8 @@ const GameContext = createContext<GameContextData>({
     creatures: [],
     hand: []
   },
-  getCardByPosition: () => null
+  getCardByPosition: () => null,
+  hasCardInPosition: () => false
 });
 
 interface GameProviderProps {
@@ -158,6 +160,11 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
     return card || null
   }
 
+  const hasCardInPosition = (position: Position): boolean => {
+    return opponentSelectedCreatures.some((creature) =>
+      creature.position.column === position.column && creature.position.row === position.row)
+  }
+
   return (
     <GameContext.Provider value={{
       gameMatch,
@@ -166,7 +173,8 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
       playerBattlefield,
       player,
       opponent,
-      getCardByPosition
+      getCardByPosition,
+      hasCardInPosition
     }}>
       {children}
     </GameContext.Provider>
