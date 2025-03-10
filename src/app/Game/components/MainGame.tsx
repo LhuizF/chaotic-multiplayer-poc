@@ -4,9 +4,8 @@ import { OpponentHand } from './OpponentHand'
 
 export const MainGame = () => {
 
-
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center h-full">
       <OpponentHand />
       <Board />
       <PlayerHand />

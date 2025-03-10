@@ -23,10 +23,10 @@ export const CreatureCard = ({ creature }: CreatureCardProps) => {
       key={creature.id}
       ref={drag}
       style={{ visibility }}
-      className="flex flex-col h-fit items-center justify-between p-2 rounded border bg-gray-700 border-red-500 hover:scale-105"
+      className="flex flex-col  items-center justify-between p-2 rounded border bg-gray-700 border-red-500 hover:scale-105"
     >
       <p className="text-sm font-semibold">{creature.name}</p>
-      <div className="flex items-center justify-center w-24 h-24 border border-gray-200 rounded">
+      <div className="flex items-center justify-center w-30 h-30 border border-gray-200 rounded">
         <img
           src={creature.image}
           alt={creature.name}
