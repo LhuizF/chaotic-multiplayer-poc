@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { FirestoreService, Game } from "@/services/FirestoreService";
-import { CreatureSelected, GameMatch, PlayerBattlefield } from "../types";
+import { CreatureSelected, GameMatch, PlayerBattlefield, Position } from "../types";
 import { Creature } from "@/cards/creatures";
 
 type GameContextData = {
@@ -19,7 +19,8 @@ type GameContextData = {
     name: string
     creatures: CreatureSelected[]
     hand: Creature[]
-  }
+  },
+  getCardByPosition: (position: Position) => CreatureSelected | null
 };
 
 const defaultGameMatch: GameMatch = {
@@ -62,7 +63,8 @@ const GameContext = createContext<GameContextData>({
     name: '',
     creatures: [],
     hand: []
-  }
+  },
+  getCardByPosition: () => null
 });
 
 interface GameProviderProps {
@@ -123,6 +125,8 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
     await firestoreService.passTurn(gameId, gameMatch.opponent.id);
   }
 
+
+
   const playerBattlefield = gameMatch.battlefield.players[userId];
 
   const opponentId = gameMatch.opponent.id
@@ -132,7 +136,6 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
 
   const playerSelectedCreatures = gameMatch.battlefield?.players[userId]?.creatures.selectedCreatures || []
   const opponentSelectedCreatures = gameMatch.battlefield?.players[opponentId]?.creatures.selectedCreatures || []
-
 
   const player = {
     id: userId,
@@ -148,6 +151,13 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
     hand: opponentCreatures
   }
 
+  const getCardByPosition = (position: Position): CreatureSelected | null => {
+    const card = playerSelectedCreatures.find((creature) =>
+      creature.position.column === position.column && creature.position.row === position.row)
+
+    return card || null
+  }
+
   return (
     <GameContext.Provider value={{
       gameMatch,
@@ -155,7 +165,8 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
       passTurn,
       playerBattlefield,
       player,
-      opponent
+      opponent,
+      getCardByPosition
     }}>
       {children}
     </GameContext.Provider>
