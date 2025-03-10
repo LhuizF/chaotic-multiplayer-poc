@@ -7,6 +7,10 @@ export interface GameMatch {
     id: string
     name: string
   }
+  player: {
+    id: string
+    name: string
+  }
   status: 'waiting' | 'playing' | 'finished'
   isYourTurn: boolean
   battlefield: Battlefield

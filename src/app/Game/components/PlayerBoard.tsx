@@ -30,11 +30,11 @@ interface CardSlotProps {
 }
 
 const CardSlot = ({ position }: CardSlotProps) => {
-  const { gameMatch, playerBattlefield, userId } = useGame()
+  const { gameMatch, playerBattlefield, player } = useGame()
   const { setCardHover, setCardSelected, cardHover } = useSetCreaturePosition({
     gameMatchId: gameMatch.id,
     playerBattlefield,
-    userId,
+    userId: player.id,
     position
   })
 

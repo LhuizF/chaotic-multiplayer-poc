@@ -1,18 +1,34 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { FirestoreService, Game } from "@/services/FirestoreService";
-import { GameMatch, PlayerBattlefield } from "../types";
+import { CreatureSelected, GameMatch, PlayerBattlefield } from "../types";
+import { Creature } from "@/cards/creatures";
 
 type GameContextData = {
   gameMatch: GameMatch;
   isLoading: boolean;
   passTurn: () => Promise<void>;
-  userId: string;
   playerBattlefield: PlayerBattlefield
+  player: {
+    id: string
+    name: string
+    creatures: CreatureSelected[]
+    hand: Creature[]
+  }
+  opponent: {
+    id: string
+    name: string
+    creatures: CreatureSelected[]
+    hand: Creature[]
+  }
 };
 
 const defaultGameMatch: GameMatch = {
   id: '',
   createdAt: '',
+  player: {
+    id: '',
+    name: ''
+  },
   opponent: {
     id: '',
     name: ''
@@ -29,12 +45,23 @@ const GameContext = createContext<GameContextData>({
   isLoading: true,
   gameMatch: defaultGameMatch,
   passTurn: async () => {},
-  userId: '',
   playerBattlefield: {
     creatures: {
       initialCreatures: [],
       selectedCreatures: []
     }
+  },
+  player: {
+    id: '',
+    name: '',
+    creatures: [],
+    hand: []
+  },
+  opponent: {
+    id: '',
+    name: '',
+    creatures: [],
+    hand: []
   }
 });
 
@@ -67,6 +94,10 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
       const match: GameMatch = {
         id: gameData.id,
         createdAt: gameData.createdAt,
+        player: {
+          id: userId,
+          name: gameData.players[userId].playerName
+        },
         opponent: {
           id: opponent.id,
           name: opponent.playerName
@@ -94,8 +125,38 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
 
   const playerBattlefield = gameMatch.battlefield.players[userId];
 
+  const opponentId = gameMatch.opponent.id
+
+  const opponentCreatures = gameMatch.battlefield?.players[opponentId]?.creatures.initialCreatures || []
+  const initialCreatures = gameMatch.battlefield?.players[userId]?.creatures.initialCreatures || []
+
+  const playerSelectedCreatures = gameMatch.battlefield?.players[userId]?.creatures.selectedCreatures || []
+  const opponentSelectedCreatures = gameMatch.battlefield?.players[opponentId]?.creatures.selectedCreatures || []
+
+
+  const player = {
+    id: userId,
+    name: gameMatch.player.name,
+    creatures: playerSelectedCreatures,
+    hand: initialCreatures
+  }
+
+  const opponent = {
+    id: opponentId,
+    name: gameMatch.opponent.name,
+    creatures: opponentSelectedCreatures,
+    hand: opponentCreatures
+  }
+
   return (
-    <GameContext.Provider value={{ gameMatch, isLoading, passTurn, userId, playerBattlefield }}>
+    <GameContext.Provider value={{
+      gameMatch,
+      isLoading,
+      passTurn,
+      playerBattlefield,
+      player,
+      opponent
+    }}>
       {children}
     </GameContext.Provider>
   );
