@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { FirestoreService, Game } from "@/services/FirestoreService";
-import { GameMatch } from "../types";
+import { GameMatch, PlayerBattlefield } from "../types";
 
 type GameContextData = {
   gameMatch: GameMatch;
   isLoading: boolean;
   passTurn: () => Promise<void>;
   userId: string;
+  playerBattlefield: PlayerBattlefield
 };
 
 const defaultGameMatch: GameMatch = {
@@ -28,7 +29,13 @@ const GameContext = createContext<GameContextData>({
   isLoading: true,
   gameMatch: defaultGameMatch,
   passTurn: async () => {},
-  userId: ''
+  userId: '',
+  playerBattlefield: {
+    creatures: {
+      initialCreatures: [],
+      selectedCreatures: []
+    }
+  }
 });
 
 interface GameProviderProps {
@@ -85,8 +92,10 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
     await firestoreService.passTurn(gameId, gameMatch.opponent.id);
   }
 
+  const playerBattlefield = gameMatch.battlefield.players[userId];
+
   return (
-    <GameContext.Provider value={{ gameMatch, isLoading, passTurn, userId }}>
+    <GameContext.Provider value={{ gameMatch, isLoading, passTurn, userId, playerBattlefield }}>
       {children}
     </GameContext.Provider>
   );

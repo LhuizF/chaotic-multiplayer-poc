@@ -1,4 +1,4 @@
-import { Creature } from "../types";
+import { Creature } from "@/cards/creatures";
 import { CreatureCard } from './CreatureCard';
 interface HandCardProps {
   cards: Creature[];

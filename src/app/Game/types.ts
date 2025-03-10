@@ -1,3 +1,5 @@
+import { Creature } from "@/cards/creatures"
+
 export interface GameMatch {
   id: string
   createdAt: string
@@ -13,23 +15,23 @@ export interface GameMatch {
 export interface Battlefield {
   status: 'choosing_creatures'
   players: {
-    [key: string]: {
-      creatures: {
-        initialCreatures: Creature[]
-        selectedCreatures: CreatureSelected[]
-      }
-    }
+    [key: string]: PlayerBattlefield
+  }
+}
+
+export interface PlayerBattlefield {
+  creatures: {
+    initialCreatures: Creature[]
+    selectedCreatures: CreatureSelected[]
   }
 }
 
 export interface CreatureSelected extends Creature {
-  position: { row: number, column: number }
+  position: Position
 }
 
-export interface Creature {
-  id: string
-  name: string
-  image: string
-  power: number
-  health: number
+
+export interface Position {
+  row: number
+  column: number
 }

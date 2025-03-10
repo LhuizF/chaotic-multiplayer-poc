@@ -28,12 +28,14 @@ interface Battlefield {
   status: 'choosing_creatures'
   players: {
     [key: string]: {
-      creatures: {
-        initialCreatures: Creature[]
-        selectedCreatures: CreatureSelected[]
-      }
+      creatures: PlayerCreatures
     }
   }
+}
+
+interface PlayerCreatures {
+  initialCreatures: Creature[]
+  selectedCreatures: CreatureSelected[]
 }
 
 export class FirestoreService {
@@ -134,6 +136,28 @@ export class FirestoreService {
     }
   }
 
+  async updatePlayerBattlefieldCreatures(gameId: string, playerId: string, playerCreatures: PlayerCreatures) {
+    const gameRef = doc(this.database, 'games', gameId);
+    const gameSnapshot = await getDoc(gameRef);
+
+    if (gameSnapshot.exists()) {
+      const game = gameSnapshot.data() as Game;
+
+      await setDoc(gameRef, {
+        ...game,
+        battlefield: {
+          ...game.battlefield,
+          players: {
+            ...game.battlefield.players,
+            [playerId]: {
+              creatures: playerCreatures
+            }
+          }
+        }
+      });
+    }
+  }
+
   private createBattlefield(userId: string): Battlefield {
     const battlefield: Battlefield = {
       status: 'choosing_creatures',
@@ -149,6 +173,7 @@ export class FirestoreService {
 
     return battlefield;
   }
+
 }
 
 export const firestoreService = new FirestoreService(firestore)

@@ -1,4 +1,4 @@
-import { Creature } from "../types";
+import { Creature } from "@/cards/creatures";
 
 interface OpponentHandProps {
   cards: Creature[];

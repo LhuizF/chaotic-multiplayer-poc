@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useDrop } from "react-dnd"
-import { Creature } from "../types"
+import { Position } from "../types"
+import { useSetCreaturePosition } from "../hooks/useSetCreaturePosition"
+import { Creature } from "@/cards/creatures"
+import { useGame } from "../context/GameContext"
 
 export const PlayerBoard = () => {
 
@@ -23,15 +26,22 @@ interface IUseDrop {
 }
 
 interface CardSlotProps {
-  position: { row: number, column: number }
+  position: Position
 }
 
 const CardSlot = ({ position }: CardSlotProps) => {
-  const [cardHover, setCardHover] = useState<Creature | null>(null)
+  const { gameMatch, playerBattlefield, userId } = useGame()
+  const { setCardHover, setCardSelected, cardHover } = useSetCreaturePosition({
+    gameMatchId: gameMatch.id,
+    playerBattlefield,
+    userId,
+    position
+  })
+
   const [{ canDrop, isOver }, drop] = useDrop<Creature, void, IUseDrop>(() => ({
     accept: 'CARD',
-    drop: (i) => {
-      // console.log(i)
+    drop: (item) => {
+      setCardSelected(item)
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
@@ -39,7 +49,7 @@ const CardSlot = ({ position }: CardSlotProps) => {
     }),
     hover: (item) => {
       setCardHover(item)
-    },
+    }
   }))
 
   useEffect(() => {
