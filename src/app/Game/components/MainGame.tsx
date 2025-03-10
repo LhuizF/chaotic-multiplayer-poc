@@ -1,6 +1,6 @@
 import { useGame } from "../context/GameContext"
 import { Board } from "./Board";
-import { HandCards } from './HandCards'
+import { PlayerHand } from './PlayerHand'
 import { OpponentHand } from './OpponentHand'
 
 export const MainGame = () => {
@@ -12,10 +12,10 @@ export const MainGame = () => {
   const initialCreatures = gameMatch.battlefield?.players[userId]?.creatures.initialCreatures || []
 
   return (
-    <div className="flex flex-col items-center justify-between w-screen h-screen overflow-hidden">
+    <div className="flex flex-col items-center">
       <OpponentHand cards={opponentCreatures} />
       <Board />
-      <HandCards cards={initialCreatures} />
+      <PlayerHand cards={initialCreatures} />
     </div>
   )
 }

@@ -6,7 +6,7 @@ interface OpponentHandProps {
 
 export const OpponentHand = ({ cards }: OpponentHandProps) => {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 justify-center h-12 w-full max-w-3xl">
       {cards.map((_, index) => (
         <div key={index}
           className="px-7 pb-4 border bg-[#392825] border-black border-t-0 rounded-b">

@@ -23,7 +23,7 @@ export const GameContent = ({ id, user }: GameContentProps) => {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center h-screen">
+    <main className="flex flex-col">
       <GameContextProvider gameId={id} userId={user.id} firestoreService={firestoreService}>
         <MainGame />
       </GameContextProvider>
