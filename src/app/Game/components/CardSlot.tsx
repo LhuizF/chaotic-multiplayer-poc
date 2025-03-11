@@ -16,16 +16,11 @@ interface CardSlotProps {
 }
 
 export const CardSlot = ({ position }: CardSlotProps) => {
-  const { gameMatch, playerBattlefield, player, getCardByPosition } = useGame()
+  const { getCardByPosition } = useGame()
 
   const card = getCardByPosition(position)
 
-  const { setCardHover, setCardSelected, cardHover } = useSetCreaturePosition({
-    gameMatchId: gameMatch.id,
-    playerBattlefield,
-    userId: player.id,
-    position
-  })
+  const { setCardHover, setCardSelected, cardHover } = useSetCreaturePosition({ position })
 
   const [{ canDrop, isOver }, drop] = useDrop<Creature, void, IUseDrop>(() => ({
     accept: 'CARD',

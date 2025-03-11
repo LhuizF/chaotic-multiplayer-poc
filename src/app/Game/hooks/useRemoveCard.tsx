@@ -2,10 +2,10 @@ import { firestoreService } from "@/services/FirestoreService";
 import { useGame } from "../context/GameContext";
 
 export const useRemoveCard = () => {
-  const { playerBattlefield, gameMatch, player } = useGame();
+  const { gameMatch, player } = useGame();
 
   const removeCard = async (cardId: string) => {
-    const creaturesInBoard = playerBattlefield.creatures.selectedCreatures;
+    const creaturesInBoard = player.creaturesInBoard
     const creature = creaturesInBoard.find((creature) => creature.id === cardId);
 
     if (!creature) {
@@ -14,7 +14,7 @@ export const useRemoveCard = () => {
     }
 
     const newCreaturesInBoard = creaturesInBoard.filter((creature) => creature.id !== cardId);
-    playerBattlefield.creatures.initialCreatures.push({
+    player.creaturesInHand.push({
       id: creature.id,
       name: creature.name,
       power: creature.power,
@@ -25,7 +25,7 @@ export const useRemoveCard = () => {
 
     const playerCreatures = {
       selectedCreatures: newCreaturesInBoard,
-      initialCreatures: playerBattlefield.creatures.initialCreatures,
+      initialCreatures: player.creaturesInHand,
     }
 
     try {

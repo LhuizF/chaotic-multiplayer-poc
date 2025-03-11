@@ -23,7 +23,7 @@ const Slot = ({ position }: SlotProps) => {
   const { hasCardInPosition } = useGame()
 
   const hasCard = hasCardInPosition(position)
-  console.log(hasCard)
+
   return (
     <div className="border rounded card-slot">
       {/* Coluna: {position.column} - Linha: {position.row} */}

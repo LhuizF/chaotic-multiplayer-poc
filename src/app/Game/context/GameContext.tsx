@@ -1,12 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { FirestoreService, Game } from "@/services/FirestoreService";
-import { CreatureSelected, GameMatch, PlayerBattlefield, PlayerGame, Position } from "../types";
+import { CreatureSelected, GameMatch, PlayerGame, Position } from "../types";
 
 type GameContextData = {
   gameMatch: GameMatch;
   isLoading: boolean;
   passTurn: () => Promise<void>;
-  playerBattlefield: PlayerBattlefield
   player: PlayerGame,
   opponent: PlayerGame,
   getCardByPosition: (position: Position) => CreatureSelected | null
@@ -36,23 +35,17 @@ const GameContext = createContext<GameContextData>({
   isLoading: true,
   gameMatch: defaultGameMatch,
   passTurn: async () => {},
-  playerBattlefield: {
-    creatures: {
-      initialCreatures: [],
-      selectedCreatures: []
-    }
-  },
   player: {
     id: '',
     name: '',
-    creatures: [],
-    hand: []
+    creaturesInHand: [],
+    creaturesInBoard: []
   },
   opponent: {
     id: '',
     name: '',
-    creatures: [],
-    hand: []
+    creaturesInHand: [],
+    creaturesInBoard: []
   },
   getCardByPosition: () => null,
   hasCardInPosition: () => false
@@ -116,39 +109,36 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
     await firestoreService.passTurn(gameId, gameMatch.opponent.id);
   }
 
-  const playerBattlefield = gameMatch.battlefield.players[userId];
-
   const opponentId = gameMatch.opponent.id
+  const opponentCreaturesInBoard = gameMatch.battlefield?.players[opponentId]?.creatures.selectedCreatures || []
+  const opponentCreaturesInHand = gameMatch.battlefield?.players[opponentId]?.creatures.initialCreatures || []
 
-  const opponentCreatures = gameMatch.battlefield?.players[opponentId]?.creatures.initialCreatures || []
-  const initialCreatures = gameMatch.battlefield?.players[userId]?.creatures.initialCreatures || []
+  const playerCreaturesInHand = gameMatch.battlefield?.players[userId]?.creatures.initialCreatures || []
+  const playerCreaturesInBoard = gameMatch.battlefield?.players[userId]?.creatures.selectedCreatures || []
 
-  const playerSelectedCreatures = gameMatch.battlefield?.players[userId]?.creatures.selectedCreatures || []
-  const opponentSelectedCreatures = gameMatch.battlefield?.players[opponentId]?.creatures.selectedCreatures || []
-
-  const player = {
+  const player: PlayerGame = {
     id: userId,
     name: gameMatch.player.name,
-    creatures: playerSelectedCreatures,
-    hand: initialCreatures
+    creaturesInHand: playerCreaturesInHand,
+    creaturesInBoard: playerCreaturesInBoard
   }
 
-  const opponent = {
+  const opponent: PlayerGame = {
     id: opponentId,
     name: gameMatch.opponent.name,
-    creatures: opponentSelectedCreatures,
-    hand: opponentCreatures
+    creaturesInHand: opponentCreaturesInHand,
+    creaturesInBoard: opponentCreaturesInBoard
   }
 
   const getCardByPosition = (position: Position): CreatureSelected | null => {
-    const card = playerSelectedCreatures.find((creature) =>
+    const card = playerCreaturesInBoard.find((creature) =>
       creature.position.column === position.column && creature.position.row === position.row)
 
     return card || null
   }
 
   const hasCardInPosition = (position: Position): boolean => {
-    return opponentSelectedCreatures.some((creature) =>
+    return opponentCreaturesInBoard.some((creature) =>
       creature.position.column === position.column && creature.position.row === position.row)
   }
 
@@ -157,7 +147,6 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
       gameMatch,
       isLoading,
       passTurn,
-      playerBattlefield,
       player,
       opponent,
       getCardByPosition,

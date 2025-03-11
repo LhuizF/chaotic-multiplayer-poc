@@ -1,42 +1,42 @@
-import { PlayerBattlefield, Position } from "../types";
+import { Position } from "../types";
 import { useEffect, useState } from "react";
 import { firestoreService } from '@/services/FirestoreService'
 import { Creature } from "@/cards/creatures";
+import { useGame } from "../context/GameContext";
 
 interface UseSetCreaturePositionProps {
-  userId: string;
-  gameMatchId: string;
-  playerBattlefield: PlayerBattlefield
   position: Position
 }
 
-export const useSetCreaturePosition = ({ gameMatchId, playerBattlefield, userId, position }: UseSetCreaturePositionProps) => {
+export const useSetCreaturePosition = ({ position }: UseSetCreaturePositionProps) => {
   const [cardHover, setCardHover] = useState<Creature | null>(null)
   const [cardSelected, setCardSelected] = useState<Creature | null>(null)
 
-  const setCreaturePosition = async (creatureId: string, position: Position) => {
-    const playerCreatures = playerBattlefield.creatures;
+  const { player, gameMatch, } = useGame()
 
-    if (!playerCreatures) {
+  const setCreaturePosition = async (creatureId: string, position: Position) => {
+    const creaturesInHand = player.creaturesInHand;
+
+    if (!creaturesInHand) {
       console.log('playerCreatures não encontrado');
       return;
     }
 
-    const creatureInitial = playerCreatures.initialCreatures.find((creature) => creature.id === creatureId);
+    const creatureInitial = creaturesInHand.find((creature) => creature.id === creatureId);
 
     if (!creatureInitial) {
-      console.log(`Criatura com id ${creatureId} não encontrada em initialCreatures`);
+      console.log(`Criatura com id ${creatureId} não encontrada na mão do jogador`);
       return;
     }
 
-    const creatureSelected = playerCreatures.selectedCreatures.find((creature) => creature.id === creatureId);
+    const creaturesInBoard = player.creaturesInBoard.find((creature) => creature.id === creatureId);
 
-    if (creatureSelected) {
-      console.log(`Criatura com id ${creatureId} já foi selecionada`);
+    if (creaturesInBoard) {
+      console.log(`Criatura com id ${creatureId} já foi jogada`);
       return;
     }
 
-    const haveCardInPosition = playerCreatures.selectedCreatures.find((creature) => {
+    const haveCardInPosition = player.creaturesInBoard.find((creature) => {
       return creature.position.row === position.row && creature.position.column === position.column;
     })
 
@@ -45,15 +45,19 @@ export const useSetCreaturePosition = ({ gameMatchId, playerBattlefield, userId,
       return;
     }
 
-    playerCreatures.selectedCreatures.push({ ...creatureInitial, position });
-    playerCreatures.initialCreatures =
-      playerCreatures.initialCreatures.filter((creature) => creature.id !== creatureId);
+    player.creaturesInBoard.push({ ...creatureInitial, position });
+    const newPlayerHand =
+      player.creaturesInHand.filter((creature) => creature.id !== creatureId);
 
+    const playerCreatures = {
+      initialCreatures: newPlayerHand,
+      selectedCreatures: player.creaturesInBoard
+    }
 
     try {
-      await firestoreService.updatePlayerBattlefieldCreatures(gameMatchId, userId, playerCreatures);
+      await firestoreService.updatePlayerBattlefieldCreatures(gameMatch.id, player.id, playerCreatures);
       setCardSelected(null);
-      console.log({ gameMatchId, userId, playerCreatures });
+
     } catch (error) {
       console.log('Erro ao atualizar criatura no firebase', error);
     }

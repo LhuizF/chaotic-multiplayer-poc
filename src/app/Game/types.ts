@@ -43,6 +43,6 @@ export interface Position {
 export interface PlayerGame {
   id: string
   name: string
-  creatures: CreatureSelected[]
-  hand: Creature[]
+  creaturesInBoard: CreatureSelected[]
+  creaturesInHand: Creature[]
 }
