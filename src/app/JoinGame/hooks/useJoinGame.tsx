@@ -9,9 +9,10 @@ interface UseJoinGameProps {
 }
 
 export function useJoinGame({ gameId }: UseJoinGameProps) {
+  const user = sessionService.getUser()
   const [error, setError] = useState<string>('')
   const [errorName, setErrorName] = useState<boolean>(false)
-  const [playerName, setPlayerName] = useState<string>('')
+  const [playerName, setPlayerName] = useState<string>(user?.playerName || '')
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const navigate = useNavigate()
@@ -30,11 +31,9 @@ export function useJoinGame({ gameId }: UseJoinGameProps) {
       return
     }
 
-    const userId = sessionService.getUser()?.id
-
     const totalPlayers = Object.keys(gameData.players).length
 
-    const inGame = Object.keys(gameData.players).includes(userId || '')
+    const inGame = Object.keys(gameData.players).includes(user?.id || '')
 
     if (inGame) {
       setError('Você já está na partida')
@@ -55,9 +54,7 @@ export function useJoinGame({ gameId }: UseJoinGameProps) {
     }
     setIsLoading(true)
 
-
-    const player = sessionService.getUser()
-    const playerId = player ? player.id : uuid()
+    const playerId = user ? user.id : uuid()
 
     try {
       sessionService.saveUser({ id: playerId, playerName })

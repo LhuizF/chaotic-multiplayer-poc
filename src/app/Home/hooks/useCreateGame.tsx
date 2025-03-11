@@ -4,11 +4,9 @@ import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom'
 import { sessionService } from '@/services/SessionService';
 
-interface UseCreateGameProps {
-  playerName: string
-}
-
-export function useCreateGame({ playerName }: UseCreateGameProps) {
+export function useCreateGame() {
+  const user = sessionService.getUser()
+  const [playerName, setPlayerName] = useState(user?.playerName || '')
   const [isLoading, setIsLoading] = useState(false)
   const [erroName, setErroName] = useState(false)
 
@@ -25,8 +23,7 @@ export function useCreateGame({ playerName }: UseCreateGameProps) {
     const gameId = uuid()
     setIsLoading(true)
 
-    const player = sessionService.getUser()
-    const playerId = player ? player.id : uuid()
+    const playerId = user ? user.id : uuid()
 
     try {
       await firestoreService.create(gameId, {
@@ -43,5 +40,5 @@ export function useCreateGame({ playerName }: UseCreateGameProps) {
     }
   }
 
-  return { createGame, isLoading, erroName, setErroName }
+  return { createGame, isLoading, erroName, setErroName, playerName, setPlayerName }
 }
