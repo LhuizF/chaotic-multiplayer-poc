@@ -58,7 +58,7 @@ export const CardSlot = ({ position }: CardSlotProps) => {
       )}
 
       {card && (
-        <CreatureInBoard creature={card} />
+        <CreatureInBoard creature={card} inGame />
       )}
 
       <p className="absolute bottom-0 right-0 text-xs text-gray-400">

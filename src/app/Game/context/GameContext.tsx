@@ -116,8 +116,6 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
     await firestoreService.passTurn(gameId, gameMatch.opponent.id);
   }
 
-
-
   const playerBattlefield = gameMatch.battlefield.players[userId];
 
   const opponentId = gameMatch.opponent.id
