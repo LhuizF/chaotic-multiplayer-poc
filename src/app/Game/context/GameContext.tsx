@@ -1,25 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { FirestoreService, Game } from "@/services/FirestoreService";
-import { CreatureSelected, GameMatch, PlayerBattlefield, Position } from "../types";
-import { Creature } from "@/cards/creatures";
+import { CreatureSelected, GameMatch, PlayerBattlefield, PlayerGame, Position } from "../types";
 
 type GameContextData = {
   gameMatch: GameMatch;
   isLoading: boolean;
   passTurn: () => Promise<void>;
   playerBattlefield: PlayerBattlefield
-  player: {
-    id: string
-    name: string
-    creatures: CreatureSelected[]
-    hand: Creature[]
-  }
-  opponent: {
-    id: string
-    name: string
-    creatures: CreatureSelected[]
-    hand: Creature[]
-  },
+  player: PlayerGame,
+  opponent: PlayerGame,
   getCardByPosition: (position: Position) => CreatureSelected | null
   hasCardInPosition: (position: Position) => boolean
 };

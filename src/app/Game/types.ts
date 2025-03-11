@@ -34,8 +34,15 @@ export interface CreatureSelected extends Creature {
   position: Position
 }
 
-
 export interface Position {
   row: number
   column: number
+}
+
+
+export interface PlayerGame {
+  id: string
+  name: string
+  creatures: CreatureSelected[]
+  hand: Creature[]
 }

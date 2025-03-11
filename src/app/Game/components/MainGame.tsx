@@ -1,14 +1,25 @@
 import { Board } from "./Board";
 import { PlayerHand } from './PlayerHand'
 import { OpponentHand } from './OpponentHand'
+import { useGame } from "../context/GameContext";
+import { DisplayPlayer } from "./DisplayPlayer";
 
 export const MainGame = () => {
+  const { player, opponent, gameMatch } = useGame()
+
+  const isYourTurn = gameMatch.isYourTurn
 
   return (
-    <div className="flex flex-col items-center h-full">
-      <OpponentHand />
-      <Board />
-      <PlayerHand />
+    <div className="h-full flex items-center justify-evenly">
+      <DisplayPlayer id={player.id} name={player.name} turn={isYourTurn} />
+
+      <div className="flex flex-col items-center h-full">
+        <OpponentHand />
+        <Board />
+        <PlayerHand />
+      </div>
+
+      <DisplayPlayer id={opponent.id} name={opponent.name} turn={!isYourTurn} />
     </div>
   )
 }
