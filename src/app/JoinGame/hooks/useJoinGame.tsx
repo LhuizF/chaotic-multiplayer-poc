@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import { firestoreService } from "@/services/FirestoreService";
+import { IGameService } from "@/services/GameService/IGameService";
 import { sessionService } from "@/services/SessionService";
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom'
 
 interface UseJoinGameProps {
-  gameId: string;
+  matchId: string;
+  gameService: IGameService;
 }
 
-export function useJoinGame({ gameId }: UseJoinGameProps) {
+export function useJoinGame({ matchId, gameService }: UseJoinGameProps) {
   const user = sessionService.getUser()
   const [error, setError] = useState<string>('')
   const [errorName, setErrorName] = useState<boolean>(false)
@@ -19,7 +20,7 @@ export function useJoinGame({ gameId }: UseJoinGameProps) {
 
   const getGame = useCallback(async () => {
     setIsLoading(true)
-    const gameData = await firestoreService.getGame(gameId)
+    const gameData = await gameService.getMatch(matchId)
 
     if (!gameData) {
       setError('Partida não encontrada')
@@ -45,7 +46,7 @@ export function useJoinGame({ gameId }: UseJoinGameProps) {
       return
     }
     setIsLoading(false)
-  }, [gameId])
+  }, [matchId])
 
   const handleJoinGame = async () => {
     if (!playerName || playerName.length < 3) {
@@ -58,7 +59,7 @@ export function useJoinGame({ gameId }: UseJoinGameProps) {
 
     try {
       sessionService.saveUser({ id: playerId, playerName })
-      const isJoin = await firestoreService.joinGame(gameId, {
+      const isJoin = await gameService.joinGame(matchId, {
         id: playerId,
         playerName
       })
@@ -68,7 +69,7 @@ export function useJoinGame({ gameId }: UseJoinGameProps) {
         return
       }
 
-      navigate(`/game/${gameId}`)
+      navigate(`/game/${matchId}`)
     } catch (error) {
       console.error(error)
       setError('Erro ao entrar na partida')

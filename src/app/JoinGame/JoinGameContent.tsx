@@ -1,12 +1,14 @@
 import { useJoinGame } from "./hooks/useJoinGame"
 import { LoadingScreen } from '@/components/LoadingScreen'
 import { GameNotFound } from '@/components/GameNotFound'
+import { IGameService } from '@/services/GameService/IGameService'
 
 interface JoinGameContentProps {
-  gameId: string
+  matchId: string
+  gameService: IGameService
 }
 
-export const JoinGameContent = ({ gameId }: JoinGameContentProps) => {
+export const JoinGameContent = ({ matchId, gameService }: JoinGameContentProps) => {
   const {
     error,
     handleJoinGame,
@@ -15,7 +17,7 @@ export const JoinGameContent = ({ gameId }: JoinGameContentProps) => {
     setPlayerName,
     cleanErrorName,
     isLoading
-  } = useJoinGame({ gameId })
+  } = useJoinGame({ matchId, gameService })
 
   if (error) {
     return <GameNotFound text={error} />
