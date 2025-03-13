@@ -13,7 +13,7 @@ export class GameService implements IGameService {
     private readonly inicitalCreatures: Creature[] = creatures
   ) {}
 
-  async createGaneMatch(matchId: string, player: Player): Promise<void> {
+  async createGameMatch(matchId: string, player: Player): Promise<void> {
     const data: GameMatch = {
       id: matchId,
       createdAt: new Date().toISOString(),
