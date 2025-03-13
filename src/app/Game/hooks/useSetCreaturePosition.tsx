@@ -1,6 +1,5 @@
 import { Position } from "../types";
 import { useEffect, useState } from "react";
-import { gameService } from '@/services/GameService'
 import { Creature } from "@/cards/creatures";
 import { useGame } from "../context/GameContext";
 
@@ -12,7 +11,7 @@ export const useSetCreaturePosition = ({ position }: UseSetCreaturePositionProps
   const [cardHover, setCardHover] = useState<Creature | null>(null)
   const [cardSelected, setCardSelected] = useState<Creature | null>(null)
 
-  const { player, gameMatchInfo } = useGame()
+  const { player, gameMatchInfo, gameService } = useGame()
 
   const setCreaturePosition = async (creatureId: string, position: Position) => {
     const creatureInitial = player.handCards.find((creature) => creature.id === creatureId);

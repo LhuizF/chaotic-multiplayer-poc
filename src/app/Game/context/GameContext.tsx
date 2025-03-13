@@ -8,6 +8,7 @@ type GameContextData = {
   isLoading: boolean;
   player: PlayerInGame,
   opponent: PlayerInGame,
+  gameService: IGameService;
   getCardByPosition: (position: Position) => CreatureSelected | null
   hasCardInPosition: (position: Position) => boolean
 };
@@ -36,7 +37,8 @@ const GameContext = createContext<GameContextData>({
   player: defaultPlayer,
   opponent: defaultPlayer,
   getCardByPosition: () => null,
-  hasCardInPosition: () => false
+  hasCardInPosition: () => false,
+  gameService: {} as IGameService
 });
 
 interface GameProviderProps {
@@ -119,6 +121,7 @@ function GameContextProvider({ children, gameService, matchId, userId }: GamePro
       isLoading,
       player,
       opponent,
+      gameService,
       getCardByPosition,
       hasCardInPosition
     }}>

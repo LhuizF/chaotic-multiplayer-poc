@@ -1,12 +1,7 @@
-import { IGameService } from "@/services/GameService/IGameService";
 import { useGame } from "../context/GameContext";
 
-interface UseRemoveCardProps {
-  gameService: IGameService;
-}
-
-export const useRemoveCard = ({ gameService }: UseRemoveCardProps) => {
-  const { gameMatchInfo, player } = useGame();
+export const useRemoveCard = () => {
+  const { gameMatchInfo, player, gameService } = useGame();
 
   const removeCard = async (cardId: string) => {
     const creature = player.boardCreatures.find((creature) => creature.id === cardId);
