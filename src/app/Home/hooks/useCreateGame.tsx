@@ -1,10 +1,14 @@
-import { firestoreService } from '@/services/FirestoreService'
+import { IGameService } from '@/services/GameService/IGameService'
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom'
 import { sessionService } from '@/services/SessionService';
 
-export function useCreateGame() {
+interface UseCreateGameProps {
+  gameService: IGameService
+}
+
+export function useCreateGame({ gameService }: UseCreateGameProps) {
   const user = sessionService.getUser()
   const [playerName, setPlayerName] = useState(user?.playerName || '')
   const [isLoading, setIsLoading] = useState(false)
@@ -26,10 +30,7 @@ export function useCreateGame() {
     const playerId = user ? user.id : uuid()
 
     try {
-      await firestoreService.create(gameId, {
-        id: playerId,
-        playerName
-      })
+      await gameService.createGameMatch(gameId, { id: playerId, playerName })
 
       sessionService.saveUser({ id: playerId, playerName })
       navigate(`/waiting/${gameId}`)

@@ -4,13 +4,13 @@ import { Creature, creatures } from '@/cards/creatures'
 import { IGameService } from './IGameService';
 import { GameMatch, Player, UpdatePlayerGame } from "./types";
 
-export class GameService implements IGameService {
+class GameService implements IGameService {
 
   private readonly collectionName = 'gameMatches';
+  private readonly inicialCreatures: Creature[] = creatures
 
   constructor(
     private readonly firestore: Firestore,
-    private readonly inicitalCreatures: Creature[] = creatures
   ) {}
 
   async createGameMatch(matchId: string, player: Player): Promise<void> {
@@ -26,7 +26,7 @@ export class GameService implements IGameService {
         status: 'choosing_creatures',
         players: {
           [player.id]: {
-            handCards: this.inicitalCreatures,
+            handCards: this.inicialCreatures,
             boardCreatures: [],
             status: 'choosing_creatures'
           }
@@ -69,7 +69,7 @@ export class GameService implements IGameService {
             players: {
               ...gameMatch.game.players,
               [player.id]: {
-                handCards: this.inicitalCreatures,
+                handCards: this.inicialCreatures,
                 boardCreatures: [],
                 status: 'choosing_creatures'
               }

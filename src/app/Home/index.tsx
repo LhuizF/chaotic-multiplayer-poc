@@ -1,8 +1,9 @@
 import { useCreateGame } from "./hooks/useCreateGame"
 import { LoadingScreen } from '@/components/LoadingScreen'
+import { gameService } from '@/services/GameService'
 
 export const Home = () => {
-  const { createGame, erroName, setErroName, isLoading, playerName, setPlayerName } = useCreateGame()
+  const { createGame, erroName, setErroName, isLoading, playerName, setPlayerName } = useCreateGame({ gameService })
 
   return (
     <main className="flex flex-col items-center justify-center h-screen">
