@@ -3,16 +3,17 @@ import { User } from "@/services/SessionService";
 import { GameNotFound } from "@/components/GameNotFound";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { GameContextProvider } from './context/GameContext'
-import { firestoreService } from "@/services/FirestoreService";
+import { IGameService } from "@/services/GameService/IGameService";
 import { MainGame } from "./components/MainGame";
 
 interface GameContentProps {
-  id: string;
-  user: User
+  matchId: string;
+  user: User;
+  gameService: IGameService;
 }
 
-export const GameContent = ({ id, user }: GameContentProps) => {
-  const { isLoading, error } = useGameStarted({ gameId: id, userId: user.id });
+export const GameContent = ({ matchId, user, gameService }: GameContentProps) => {
+  const { isLoading, error } = useGameStarted({ matchId, userId: user.id, gameService });
 
   if (error) {
     return <GameNotFound text={error} />
@@ -24,7 +25,7 @@ export const GameContent = ({ id, user }: GameContentProps) => {
 
   return (
     <main className="h-screen">
-      <GameContextProvider gameId={id} userId={user.id} firestoreService={firestoreService}>
+      <GameContextProvider matchId={matchId} userId={user.id} gameService={gameService} >
         <MainGame />
       </GameContextProvider>
     </main>

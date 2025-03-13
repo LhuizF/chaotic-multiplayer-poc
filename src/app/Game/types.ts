@@ -1,34 +1,24 @@
 import { Creature } from "@/cards/creatures"
 
-export interface GameMatch {
+export interface GameMatchInfo {
   id: string
   createdAt: string
-  opponent: {
-    id: string
-    name: string
-  }
-  player: {
-    id: string
-    name: string
-  }
+  opponent: PlayerInGame
+  player: PlayerInGame
   status: 'waiting' | 'playing' | 'finished'
   isYourTurn: boolean
-  battlefield: Battlefield
+  gameStatus: 'choosing_creatures' | 'battle' | 'finished'
 }
 
-export interface Battlefield {
-  status: 'choosing_creatures'
-  players: {
-    [key: string]: PlayerBattlefield
-  }
+export interface PlayerInGame {
+  id: string
+  name: string
+  handCards: Creature[]
+  boardCreatures: CreatureSelected[]
+  status: PlayerStatus
 }
 
-export interface PlayerBattlefield {
-  creatures: {
-    initialCreatures: Creature[]
-    selectedCreatures: CreatureSelected[]
-  }
-}
+type PlayerStatus = 'choosing_creatures' | 'ready' | 'battle'
 
 export interface CreatureSelected extends Creature {
   position: Position
@@ -37,12 +27,4 @@ export interface CreatureSelected extends Creature {
 export interface Position {
   row: number
   column: number
-}
-
-
-export interface PlayerGame {
-  id: string
-  name: string
-  creaturesInBoard: CreatureSelected[]
-  creaturesInHand: Creature[]
 }

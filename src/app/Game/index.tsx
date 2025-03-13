@@ -4,6 +4,7 @@ import { GameNotFound } from '@/components/GameNotFound';
 import { sessionService } from "@/services/SessionService";
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { gameService } from "@/services/GameService";
 
 export const Game = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,7 +16,7 @@ export const Game = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <GameContent id={id} user={user} />
+      <GameContent matchId={id} user={user} gameService={gameService} />
     </DndProvider>
   )
 }

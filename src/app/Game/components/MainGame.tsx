@@ -5,9 +5,9 @@ import { useGame } from "../context/GameContext";
 import { DisplayPlayer } from "./DisplayPlayer";
 
 export const MainGame = () => {
-  const { player, opponent, gameMatch } = useGame()
+  const { player, opponent, gameMatchInfo } = useGame()
 
-  const isYourTurn = gameMatch.isYourTurn
+  const isYourTurn = gameMatchInfo.isYourTurn
 
   return (
     <div className="h-full flex items-center justify-evenly">

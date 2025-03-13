@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { firestoreService } from "@/services/FirestoreService";
+import { IGameService } from "@/services/GameService/IGameService";
 
 interface UseGameListenerProps {
-  gameId: string;
+  matchId: string;
   userId: string;
+  gameService: IGameService;
 }
 
-export function useGameStarted({ gameId, userId }: UseGameListenerProps) {
+export function useGameStarted({ matchId, userId, gameService }: UseGameListenerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,12 +15,12 @@ export function useGameStarted({ gameId, userId }: UseGameListenerProps) {
     const getGame = async () => {
       setIsLoading(true);
 
-      if (!gameId) {
+      if (!matchId) {
         return;
       }
 
       try {
-        const gameData = await firestoreService.getGame(gameId);
+        const gameData = await gameService.getMatch(matchId);
 
         if (!gameData) {
           setError('Partida não encontrada');

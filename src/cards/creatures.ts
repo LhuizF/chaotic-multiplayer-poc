@@ -9,7 +9,6 @@ export interface Creature {
 
 export type Element = 'Fire' | 'Water' | 'Earth' | 'Air';
 
-
 export const creatures: Creature[] = [
   {
     id: '1',

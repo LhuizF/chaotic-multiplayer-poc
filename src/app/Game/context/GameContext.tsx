@@ -1,70 +1,58 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { FirestoreService, Game } from "@/services/FirestoreService";
-import { CreatureSelected, GameMatch, PlayerGame, Position } from "../types";
+import { IGameService } from "@/services/GameService/IGameService";
+import { GameMatchInfo, PlayerInGame, Position, CreatureSelected } from "../types";
+import { GameMatch } from "../../../services/GameService/types";
 
 type GameContextData = {
-  gameMatch: GameMatch;
+  gameMatchInfo: GameMatchInfo;
   isLoading: boolean;
-  passTurn: () => Promise<void>;
-  player: PlayerGame,
-  opponent: PlayerGame,
+  player: PlayerInGame,
+  opponent: PlayerInGame,
   getCardByPosition: (position: Position) => CreatureSelected | null
   hasCardInPosition: (position: Position) => boolean
 };
 
-const defaultGameMatch: GameMatch = {
+const defaultPlayer: PlayerInGame = {
+  id: '',
+  name: '',
+  status: 'choosing_creatures',
+  handCards: [],
+  boardCreatures: []
+}
+
+const defaultGameMatch: GameMatchInfo = {
   id: '',
   createdAt: '',
-  player: {
-    id: '',
-    name: ''
-  },
-  opponent: {
-    id: '',
-    name: ''
-  },
+  player: defaultPlayer,
+  opponent: defaultPlayer,
   status: 'waiting',
   isYourTurn: false,
-  battlefield: {
-    status: 'choosing_creatures',
-    players: {}
-  }
+  gameStatus: 'choosing_creatures'
 };
 
 const GameContext = createContext<GameContextData>({
   isLoading: true,
-  gameMatch: defaultGameMatch,
-  passTurn: async () => {},
-  player: {
-    id: '',
-    name: '',
-    creaturesInHand: [],
-    creaturesInBoard: []
-  },
-  opponent: {
-    id: '',
-    name: '',
-    creaturesInHand: [],
-    creaturesInBoard: []
-  },
+  gameMatchInfo: defaultGameMatch,
+  player: defaultPlayer,
+  opponent: defaultPlayer,
   getCardByPosition: () => null,
   hasCardInPosition: () => false
 });
 
 interface GameProviderProps {
   children: React.ReactNode;
-  firestoreService: FirestoreService
-  gameId: string;
+  gameService: IGameService;
+  matchId: string;
   userId: string;
 }
 
-function GameContextProvider({ children, firestoreService, gameId, userId }: GameProviderProps) {
-  const [gameMatch, setGameMatch] = useState<GameMatch>(defaultGameMatch);
+function GameContextProvider({ children, gameService, matchId, userId }: GameProviderProps) {
+  const [gameMatch, setGameMatch] = useState<GameMatchInfo>(defaultGameMatch);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(true);
-    const unsubscribe = firestoreService.listenGame(gameId, (gameData: Game) => {
+    const unsubscribe = gameService.listenGame(matchId, (gameData: GameMatch) => {
       if (!gameData) {
         return;
       }
@@ -75,22 +63,31 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
         return;
       }
 
-      const isYourTurn = gameData.turn === userId;
+      const isYourTurn = gameData.playerTurn === userId;
 
-      const match: GameMatch = {
+      const player: PlayerInGame = {
+        id: userId,
+        name: gameData.players[userId].playerName,
+        handCards: gameData.game.players[userId].handCards,
+        boardCreatures: gameData.game.players[userId].boardCreatures,
+        status: gameData.game.players[userId].status
+      };
+      const opponentPlayer: PlayerInGame = {
+        id: opponent.id,
+        name: opponent.playerName,
+        handCards: gameData.game.players[opponent.id].handCards,
+        boardCreatures: gameData.game.players[opponent.id].boardCreatures,
+        status: gameData.game.players[opponent.id].status
+      };
+
+      const match: GameMatchInfo = {
         id: gameData.id,
         createdAt: gameData.createdAt,
-        player: {
-          id: userId,
-          name: gameData.players[userId].playerName
-        },
-        opponent: {
-          id: opponent.id,
-          name: opponent.playerName
-        },
+        player: player,
+        opponent: opponentPlayer,
         status: gameData.status,
         isYourTurn,
-        battlefield: gameData.battlefield
+        gameStatus: gameData.game.status
       }
 
       setGameMatch(match);
@@ -99,54 +96,27 @@ function GameContextProvider({ children, firestoreService, gameId, userId }: Gam
 
     return () => unsubscribe()
 
-  }, [gameId, userId]);
+  }, [matchId, userId]);
 
-  const passTurn = async () => {
-    if (!gameMatch.isYourTurn) {
-      return;
-    }
-
-    await firestoreService.passTurn(gameId, gameMatch.opponent.id);
-  }
-
-  const opponentId = gameMatch.opponent.id
-  const opponentCreaturesInBoard = gameMatch.battlefield?.players[opponentId]?.creatures.selectedCreatures || []
-  const opponentCreaturesInHand = gameMatch.battlefield?.players[opponentId]?.creatures.initialCreatures || []
-
-  const playerCreaturesInHand = gameMatch.battlefield?.players[userId]?.creatures.initialCreatures || []
-  const playerCreaturesInBoard = gameMatch.battlefield?.players[userId]?.creatures.selectedCreatures || []
-
-  const player: PlayerGame = {
-    id: userId,
-    name: gameMatch.player.name,
-    creaturesInHand: playerCreaturesInHand,
-    creaturesInBoard: playerCreaturesInBoard
-  }
-
-  const opponent: PlayerGame = {
-    id: opponentId,
-    name: gameMatch.opponent.name,
-    creaturesInHand: opponentCreaturesInHand,
-    creaturesInBoard: opponentCreaturesInBoard
-  }
+  const player = gameMatch.player;
+  const opponent = gameMatch.opponent;
 
   const getCardByPosition = (position: Position): CreatureSelected | null => {
-    const card = playerCreaturesInBoard.find((creature) =>
+    const card = player.boardCreatures.find((creature) =>
       creature.position.column === position.column && creature.position.row === position.row)
 
     return card || null
   }
 
   const hasCardInPosition = (position: Position): boolean => {
-    return opponentCreaturesInBoard.some((creature) =>
+    return opponent.boardCreatures.some((creature) =>
       creature.position.column === position.column && creature.position.row === position.row)
   }
 
   return (
     <GameContext.Provider value={{
-      gameMatch,
+      gameMatchInfo: gameMatch,
       isLoading,
-      passTurn,
       player,
       opponent,
       getCardByPosition,

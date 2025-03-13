@@ -1,20 +1,23 @@
-import { firestoreService } from "@/services/FirestoreService";
+import { IGameService } from "@/services/GameService/IGameService";
 import { useGame } from "../context/GameContext";
 
-export const useRemoveCard = () => {
-  const { gameMatch, player } = useGame();
+interface UseRemoveCardProps {
+  gameService: IGameService;
+}
+
+export const useRemoveCard = ({ gameService }: UseRemoveCardProps) => {
+  const { gameMatchInfo, player } = useGame();
 
   const removeCard = async (cardId: string) => {
-    const creaturesInBoard = player.creaturesInBoard
-    const creature = creaturesInBoard.find((creature) => creature.id === cardId);
+    const creature = player.boardCreatures.find((creature) => creature.id === cardId);
 
     if (!creature) {
       console.log(`Criatura com id ${cardId} não encontrada`);
       return;
     }
 
-    const newCreaturesInBoard = creaturesInBoard.filter((creature) => creature.id !== cardId);
-    player.creaturesInHand.push({
+    const newBoardCreatures = player.boardCreatures.filter((creature) => creature.id !== cardId);
+    player.handCards.push({
       id: creature.id,
       name: creature.name,
       power: creature.power,
@@ -23,13 +26,14 @@ export const useRemoveCard = () => {
       image: creature.image,
     });
 
-    const playerCreatures = {
-      selectedCreatures: newCreaturesInBoard,
-      initialCreatures: player.creaturesInHand,
+    const playerGame = {
+      playerId: player.id,
+      handCards: player.handCards,
+      boardCreatures: newBoardCreatures,
     }
 
     try {
-      await firestoreService.updatePlayerBattlefieldCreatures(gameMatch.id, player.id, playerCreatures);
+      await gameService.updatePlayerGame(gameMatchInfo.id, playerGame)
     } catch (error) {
       console.log('Erro ao atualizar criatura no firebase', error);
     }
