@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { firestoreService, Game } from '@/services/FirestoreService'
 import { useNavigate } from "react-router-dom";
+import { IGameService } from "@/services/GameService/IGameService";
+import { GameMatch } from "@/services/GameService/types";
 
-interface UseGetGameStatus {
-  gameId: string
+interface UseGetGameStatusProps {
+  matchId: string
   userId: string
+  gameService: IGameService
 }
 
-export function useGetGameStatus({ gameId, userId }: UseGetGameStatus) {
+export function useGetGameStatus({ matchId, userId, gameService }: UseGetGameStatusProps) {
   const [error, setError] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [game, setGame] = useState<Game | null>(null)
+  const [game, setGame] = useState<GameMatch | null>(null)
 
   const navigate = useNavigate()
 
@@ -22,11 +24,13 @@ export function useGetGameStatus({ gameId, userId }: UseGetGameStatus) {
       setError('')
 
       try {
-        const gameData = await firestoreService.getGame(gameId)
+        const gameData = await gameService.getMatch(matchId)
+
         if (!gameData) {
           setError('Game não encontrado')
           return
         }
+
         if (!gameData.players?.[userId]) {
           setError('Você não está participando desta partida')
           return
@@ -42,19 +46,19 @@ export function useGetGameStatus({ gameId, userId }: UseGetGameStatus) {
     }
 
     fetchGame()
-  }, [gameId, userId])
+  }, [matchId, userId])
 
   useEffect(() => {
     if (!game) return
 
-    const unsubscribe = firestoreService.listenGame(gameId, (updatedGame) => {
+    const unsubscribe = gameService.listenGame(matchId, (updatedGame) => {
       if (updatedGame && updatedGame.status === 'playing') {
-        navigate(`/game/${gameId}`)
+        navigate(`/game/${matchId}`)
       }
     })
 
     return () => unsubscribe()
-  }, [gameId, game])
+  }, [matchId, game])
 
   return { gameStatus, isLoading, error }
 }

@@ -1,16 +1,16 @@
 import { useGetGameStatus } from "./hooks/useGetGameStatus"
 import { LoadingScreen } from '@/components/LoadingScreen'
 import { GameNotFound } from '@/components/GameNotFound'
-import { sessionService } from "@/services/SessionService"
+import { IGameService } from "@/services/GameService/IGameService"
 
 interface WaitingContentProps {
-  gameId: string
+  matchId: string
+  userId: string
+  gameService: IGameService
 }
 
-export const WaitingContent = ({ gameId }: WaitingContentProps) => {
-  const user = sessionService.getUser()
-
-  const { error, gameStatus, isLoading } = useGetGameStatus({ gameId, userId: user?.id || '' })
+export const WaitingContent = ({ matchId, userId, gameService }: WaitingContentProps) => {
+  const { error, gameStatus, isLoading } = useGetGameStatus({ matchId, userId, gameService })
 
   if (error) {
     return <GameNotFound text={error} />
@@ -20,7 +20,7 @@ export const WaitingContent = ({ gameId }: WaitingContentProps) => {
     return <LoadingScreen />
   }
 
-  const link = `${window.location.origin}/join/${gameId}`
+  const link = `${window.location.origin}/join/${matchId}`
 
   return (
     <main className="flex flex-col items-center justify-center h-screen">
