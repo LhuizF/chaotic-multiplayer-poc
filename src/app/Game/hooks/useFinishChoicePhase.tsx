@@ -1,7 +1,7 @@
 import { useGame } from "../context/GameContext";
 
 export const useFinishChoicePhase = () => {
-  const { gameMatchInfo, player, gameService } = useGame()
+  const { gameMatchInfo, player, gameService, opponent } = useGame()
 
   const finishChoicePhase = async () => {
     if (player.boardCreatures.length < 3) {
@@ -9,8 +9,10 @@ export const useFinishChoicePhase = () => {
       return;
     }
 
+    const updateGameStatus = opponent.status === 'ready';
+
     try {
-      await gameService.updatePlayerStatus(gameMatchInfo.id, player.id, 'ready');
+      await gameService.finishChoicePhase(gameMatchInfo.id, player.id, updateGameStatus);
     } catch (error) {
       console.log('Erro ao atualizar fase do jogador no firebase', error);
     }
