@@ -3,14 +3,17 @@ import { PlayerHand } from './PlayerHand'
 import { OpponentHand } from './OpponentHand'
 import { useGame } from "../context/GameContext";
 import { DisplayPlayer } from "./DisplayPlayer";
+import { useShowBanner } from "@/hooks/useShowBanner";
 
 export const MainGame = () => {
   const { player, opponent, gameMatchInfo } = useGame()
 
   const isYourTurn = gameMatchInfo.isYourTurn
 
-
-  console.log('gameMatchInfo', gameMatchInfo.gameStatus)
+  const banner = useShowBanner({
+    condition: gameMatchInfo.gameStatus === 'battle',
+    text: 'Batalha iniciada!'
+  })
 
   return (
     <div className="h-full flex items-center justify-evenly">
@@ -22,6 +25,7 @@ export const MainGame = () => {
         <PlayerHand />
       </div>
 
+      {banner}
       <DisplayPlayer id={player.id} name={player.name} turn={isYourTurn} isPlayer />
     </div>
   )
