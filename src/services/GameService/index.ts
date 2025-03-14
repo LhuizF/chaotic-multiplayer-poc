@@ -2,7 +2,7 @@ import { Firestore, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { Creature, creatures } from '@/cards/creatures'
 import { IGameService } from './IGameService';
-import { GameMatch, Player, UpdatePlayerGame } from "./types";
+import { GameMatch, GamePlayerStatus, Player, UpdatePlayerGame } from "./types";
 
 class GameService implements IGameService {
 
@@ -120,6 +120,32 @@ class GameService implements IGameService {
         callback(snapshot.data() as GameMatch);
       }
     });
+  }
+
+  async updatePlayerStatus(matchId: string, playerId: string, playerStatus: GamePlayerStatus): Promise<void> {
+    const matchRef = doc(this.firestore, this.collectionName, matchId);
+    const matchSnapshot = await getDoc(matchRef);
+
+    if (matchSnapshot.exists()) {
+      const match = matchSnapshot.data() as GameMatch;
+
+      const matchUpdate: GameMatch = {
+        ...match,
+        game: {
+          ...match.game,
+          players: {
+            ...match.game.players,
+            [playerId]: {
+              boardCreatures: match.game.players[playerId].boardCreatures,
+              handCards: [],
+              status: playerStatus
+            }
+          }
+        }
+      };
+
+      await setDoc(matchRef, matchUpdate);
+    }
   }
 
 }

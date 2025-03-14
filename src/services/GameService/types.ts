@@ -31,7 +31,7 @@ interface Game {
 
 type GameStatus = 'choosing_creatures' | 'battle' | 'finished'
 
-type GamePlayerStatus = 'choosing_creatures' | 'ready' | 'battle'
+export type GamePlayerStatus = 'choosing_creatures' | 'ready' | 'battle'
 
 interface CreatureSelected extends Creature {
   position: { row: number, column: number }
