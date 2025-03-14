@@ -1,5 +1,6 @@
 import { useGame } from "../context/GameContext"
 import { Position } from "../types"
+import { CreatureInBoard } from "./CreatureInBoard"
 
 export const OpponentBoard = () => {
   return (
@@ -20,17 +21,22 @@ interface SlotProps {
 }
 
 const Slot = ({ position }: SlotProps) => {
-  const { hasCardInPosition } = useGame()
+  const { getOpponentCardByPosition, gameMatchInfo } = useGame()
 
-  const hasCard = hasCardInPosition(position)
+  const card = getOpponentCardByPosition(position)
+
+  const { gameStatus } = gameMatchInfo
 
   return (
     <div className="border rounded card-slot">
-      {/* Coluna: {position.column} - Linha: {position.row} */}
-      {hasCard &&
+      {card && gameStatus === 'choosing_creatures' &&
         <div className="w-full h-full bg-[#392825] flex justify-center items-center">
           <div className="w-1/2 h-2/3 bg-black rounded-full"></div>
         </div>
+      }
+      {
+        card && gameStatus === 'battle' &&
+        <CreatureInBoard creature={card} />
       }
     </div>
   )

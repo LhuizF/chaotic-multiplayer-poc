@@ -9,8 +9,8 @@ type GameContextData = {
   player: PlayerInGame,
   opponent: PlayerInGame,
   gameService: IGameService;
-  getCardByPosition: (position: Position) => CreatureSelected | null
-  hasCardInPosition: (position: Position) => boolean
+  getPlayerCardByPosition: (position: Position) => CreatureSelected | null
+  getOpponentCardByPosition: (position: Position) => CreatureSelected | null
 };
 
 const defaultPlayer: PlayerInGame = {
@@ -36,8 +36,8 @@ const GameContext = createContext<GameContextData>({
   gameMatchInfo: defaultGameMatch,
   player: defaultPlayer,
   opponent: defaultPlayer,
-  getCardByPosition: () => null,
-  hasCardInPosition: () => false,
+  getPlayerCardByPosition: () => null,
+  getOpponentCardByPosition: () => null,
   gameService: {} as IGameService
 });
 
@@ -103,17 +103,11 @@ function GameContextProvider({ children, gameService, matchId, userId }: GamePro
   const player = gameMatch.player;
   const opponent = gameMatch.opponent;
 
-  const getCardByPosition = (position: Position): CreatureSelected | null => {
-    const card = player.boardCreatures.find((creature) =>
-      creature.position.column === position.column && creature.position.row === position.row)
+  const getCardAtPosition = (creatures: CreatureSelected[], position: Position): CreatureSelected | null =>
+    creatures.find(({ position: { column, row } }) => column === position.column && row === position.row) || null;
 
-    return card || null
-  }
-
-  const hasCardInPosition = (position: Position): boolean => {
-    return opponent.boardCreatures.some((creature) =>
-      creature.position.column === position.column && creature.position.row === position.row)
-  }
+  const getPlayerCardByPosition = (position: Position) => getCardAtPosition(player.boardCreatures, position);
+  const getOpponentCardByPosition = (position: Position) => getCardAtPosition(opponent.boardCreatures, position);
 
   return (
     <GameContext.Provider value={{
@@ -122,8 +116,8 @@ function GameContextProvider({ children, gameService, matchId, userId }: GamePro
       player,
       opponent,
       gameService,
-      getCardByPosition,
-      hasCardInPosition
+      getPlayerCardByPosition,
+      getOpponentCardByPosition
     }}>
       {children}
     </GameContext.Provider>

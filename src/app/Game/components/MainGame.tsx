@@ -9,6 +9,9 @@ export const MainGame = () => {
 
   const isYourTurn = gameMatchInfo.isYourTurn
 
+
+  console.log('gameMatchInfo', gameMatchInfo.gameStatus)
+
   return (
     <div className="h-full flex items-center justify-evenly">
       <DisplayPlayer id={opponent.id} name={opponent.name} turn={!isYourTurn} />

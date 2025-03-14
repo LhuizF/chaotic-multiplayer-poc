@@ -16,9 +16,9 @@ interface CardSlotProps {
 }
 
 export const CardSlot = ({ position }: CardSlotProps) => {
-  const { getCardByPosition, player } = useGame()
+  const { getPlayerCardByPosition, player } = useGame()
 
-  const card = getCardByPosition(position)
+  const card = getPlayerCardByPosition(position)
 
   const { setCardHover, setCardSelected, cardHover } = useSetCreaturePosition({ position })
 
