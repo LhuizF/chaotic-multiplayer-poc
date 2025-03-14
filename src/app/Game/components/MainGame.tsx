@@ -11,7 +11,7 @@ export const MainGame = () => {
 
   return (
     <div className="h-full flex items-center justify-evenly">
-      <DisplayPlayer id={player.id} name={player.name} turn={isYourTurn} />
+      <DisplayPlayer id={opponent.id} name={opponent.name} turn={!isYourTurn} />
 
       <div className="flex flex-col items-center h-full">
         <OpponentHand />
@@ -19,7 +19,7 @@ export const MainGame = () => {
         <PlayerHand />
       </div>
 
-      <DisplayPlayer id={opponent.id} name={opponent.name} turn={!isYourTurn} />
+      <DisplayPlayer id={player.id} name={player.name} turn={isYourTurn} isPlayer />
     </div>
   )
 }

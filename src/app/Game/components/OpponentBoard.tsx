@@ -3,8 +3,8 @@ import { Position } from "../types"
 
 export const OpponentBoard = () => {
   return (
-    <div className="flex w-1/2 gap-1">
-      <div className="flex flex-col w-1/2 justify-center items-center gap-1">
+    <div className="flex w-1/2 gap-2">
+      <div className="flex flex-col w-1/2 justify-center items-center gap-2">
         <Slot position={{ column: 1, row: 1 }} />
         <Slot position={{ column: 1, row: 2 }} />
       </div>

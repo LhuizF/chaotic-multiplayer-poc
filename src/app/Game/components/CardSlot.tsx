@@ -16,7 +16,7 @@ interface CardSlotProps {
 }
 
 export const CardSlot = ({ position }: CardSlotProps) => {
-  const { getCardByPosition } = useGame()
+  const { getCardByPosition, player } = useGame()
 
   const card = getCardByPosition(position)
 
@@ -53,7 +53,11 @@ export const CardSlot = ({ position }: CardSlotProps) => {
       )}
 
       {card && (
-        <CreatureInBoard creature={card} inGame />
+        <CreatureInBoard
+          cardInBoard
+          creature={card}
+          choicePhase={player.status === 'choosing_creatures'}
+        />
       )}
 
       <p className="absolute bottom-0 right-0 text-xs text-gray-400">

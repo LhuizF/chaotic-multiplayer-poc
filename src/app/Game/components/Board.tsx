@@ -4,10 +4,12 @@ import { PlayerBoard } from './PlayerBoard'
 export const Board = () => {
 
   return (
-    <div className="flex flex-1 h-full bg-base-200 w-3xl gap-1 m-1 p-1 border border-white rounded">
-      <PlayerBoard />
+    <div className="flex flex-1 items-center">
+      <div className="flex border border-white p-4 rounded h-fit w-full gap-2">
+        <PlayerBoard />
 
-      <OpponentBoard />
+        <OpponentBoard />
+      </div>
     </div>
   )
 }
