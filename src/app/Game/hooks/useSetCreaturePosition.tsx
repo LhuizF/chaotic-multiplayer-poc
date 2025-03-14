@@ -2,6 +2,7 @@ import { Position } from "../types";
 import { useEffect, useState } from "react";
 import { Creature } from "@/cards/creatures";
 import { useGame } from "../context/GameContext";
+import { toast } from "react-toastify";
 
 interface UseSetCreaturePositionProps {
   position: Position
@@ -17,14 +18,14 @@ export const useSetCreaturePosition = ({ position }: UseSetCreaturePositionProps
     const creatureInitial = player.handCards.find((creature) => creature.id === creatureId);
 
     if (!creatureInitial) {
-      console.log(`Criatura com id ${creatureId} não encontrada na mão do jogador`);
+      toast.error('Erro: carta não encontrada na mão do jogador');
       return;
     }
 
     const creaturesInBoard = player.boardCreatures.find((creature) => creature.id === creatureId);
 
     if (creaturesInBoard) {
-      console.log(`Criatura com id ${creatureId} já foi jogada`);
+      toast.error('Erro: carta já foi jogada');
       return;
     }
 
@@ -33,7 +34,7 @@ export const useSetCreaturePosition = ({ position }: UseSetCreaturePositionProps
     })
 
     if (haveCardInPosition) {
-      console.log('Já existe uma criatura nessa posição');
+      toast.error('Já existe uma carta nessa posição');
       return;
     }
 
@@ -51,7 +52,7 @@ export const useSetCreaturePosition = ({ position }: UseSetCreaturePositionProps
 
       setCardSelected(null);
     } catch (error) {
-      console.log('Erro ao atualizar criatura no firebase', error);
+      console.error('Erro ao atualizar criatura no firebase', error);
     }
   };
 

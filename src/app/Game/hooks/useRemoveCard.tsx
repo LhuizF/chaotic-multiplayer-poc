@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useGame } from "../context/GameContext";
 
 export const useRemoveCard = () => {
@@ -7,7 +8,7 @@ export const useRemoveCard = () => {
     const creature = player.boardCreatures.find((creature) => creature.id === cardId);
 
     if (!creature) {
-      console.log(`Criatura com id ${cardId} não encontrada`);
+      toast.error(`Erro: carta não encontrada`);
       return;
     }
 
@@ -30,7 +31,7 @@ export const useRemoveCard = () => {
     try {
       await gameService.updatePlayerGame(gameMatchInfo.id, playerGame)
     } catch (error) {
-      console.log('Erro ao atualizar criatura no firebase', error);
+      console.error('Erro ao atualizar criatura no firebase', error);
     }
   };
 

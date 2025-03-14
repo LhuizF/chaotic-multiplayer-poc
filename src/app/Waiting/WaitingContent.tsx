@@ -2,6 +2,7 @@ import { useGetGameStatus } from "./hooks/useGetGameStatus"
 import { LoadingScreen } from '@/components/LoadingScreen'
 import { GameNotFound } from '@/components/GameNotFound'
 import { IGameService } from "@/services/GameService/IGameService"
+import { toast } from 'react-toastify'
 
 interface WaitingContentProps {
   matchId: string
@@ -21,6 +22,13 @@ export const WaitingContent = ({ matchId, userId, gameService }: WaitingContentP
   }
 
   const link = `${window.location.origin}/join/${matchId}`
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(link)
+    toast.success('Link copiado para a área de transferência', {
+      progress: undefined,
+    })
+  }
 
   return (
     <main className="flex flex-col items-center justify-center h-screen">
@@ -45,7 +53,7 @@ export const WaitingContent = ({ matchId, userId, gameService }: WaitingContentP
               />
               <button
                 className="btn btn-primary join-item"
-                onClick={() => navigator.clipboard.writeText(link)}
+                onClick={handleCopyLink}
               >
                 Copiar link
               </button>
