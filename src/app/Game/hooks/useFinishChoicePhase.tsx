@@ -19,7 +19,9 @@ export const useFinishChoicePhase = () => {
     }
   };
 
-  const canConfirmCreatures = player.boardCreatures.length === 3;
+  const canConfirmCreatures = player.boardCreatures.length === 3 && player.status === 'choosing_creatures'
 
-  return { finishChoicePhase, canConfirmCreatures };
+  const renderStartBattle = gameMatchInfo.gameStatus === 'choosing_creatures';
+
+  return { finishChoicePhase, canConfirmCreatures, renderStartBattle };
 }
