@@ -2,10 +2,9 @@ import { Firestore, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { Creature, creatures } from '@/cards/creatures'
 import { IGameService } from './IGameService';
-import { GameMatch, Player, UpdatePlayerGame } from "./types";
+import { Duel, GameMatch, Player, UpdatePlayerGame } from "./types";
 
 class GameService implements IGameService {
-
   private readonly collectionName = 'gameMatches';
   private readonly inicialCreatures: Creature[] = creatures
 
@@ -28,7 +27,8 @@ class GameService implements IGameService {
             boardCreatures: [],
             status: 'choosing_creatures'
           }
-        }
+        },
+        duels: []
       }
     }
 
@@ -147,6 +147,26 @@ class GameService implements IGameService {
       }
 
       await setDoc(matchRef, matchUpdate);
+    }
+  }
+
+  async startNewDuel(matchId: string, duel: Duel): Promise<void> {
+    const matchRef = doc(this.firestore, this.collectionName, matchId);
+    const matchSnapshot = await getDoc(matchRef);
+
+    if (matchSnapshot.exists()) {
+      const match = matchSnapshot.data() as GameMatch;
+
+      await setDoc(matchRef, {
+        ...match,
+        game: {
+          ...match.game,
+          duels: [
+            ...match.game.duels,
+            duel
+          ]
+        }
+      });
     }
   }
 

@@ -1,4 +1,5 @@
 import { Creature } from "@/cards/creatures"
+import { Attack } from "@/cards/attacks"
 
 export interface GameMatch {
   id: string
@@ -27,6 +28,7 @@ interface Game {
       status: GamePlayerStatus
     }
   }
+  duels: Duel[]
 }
 
 type GameStatus = 'choosing_creatures' | 'battle' | 'finished'
@@ -41,4 +43,15 @@ export interface UpdatePlayerGame {
   playerId: string
   handCards: Creature[]
   boardCreatures: CreatureSelected[]
+}
+
+export interface Duel {
+  [key: string]: {
+    creature: CreatureSelected
+    attacks: {
+      turn: number
+      cardAttack: Attack
+      damage: number
+    }[]
+  }
 }

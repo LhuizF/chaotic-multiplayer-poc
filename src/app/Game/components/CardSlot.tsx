@@ -5,6 +5,7 @@ import { Creature } from "../../../cards/creatures"
 import { useSetCreaturePosition } from "../hooks/useSetCreaturePosition"
 import { useGame } from "../context/GameContext"
 import { Position } from "../types"
+import { useDuel } from "../context/DuelContext"
 
 interface IUseDrop {
   isOver: boolean
@@ -16,11 +17,13 @@ interface CardSlotProps {
 }
 
 export const CardSlot = ({ position }: CardSlotProps) => {
-  const { getPlayerCardByPosition, player } = useGame()
+  const { getPlayerCardByPosition, player, gameMatchInfo } = useGame()
 
   const card = getPlayerCardByPosition(position)
 
   const { setCardHover, setCardSelected, cardHover } = useSetCreaturePosition({ position })
+
+  const { selectPlayerCard, playerCard } = useDuel()
 
   const [{ canDrop, isOver }, drop] = useDrop<Creature, void, IUseDrop>(() => ({
     accept: 'CARD',
@@ -42,11 +45,24 @@ export const CardSlot = ({ position }: CardSlotProps) => {
     }
   }, [isOver])
 
+  const battleStarted = gameMatchInfo.gameStatus === 'battle'
+
+  const cardSelected = playerCard && card && playerCard.id === card.id
+
   return (
     <div
       ref={drop}
-      className="border rounded relative card-slot overflow-hidden"
+      className={`border rounded relative card-slot overflow-hidden
+        ${battleStarted && !playerCard ? 'hover:border-blue-500' : ''}
+        ${cardSelected ? 'border-red-500 hover:border-red-500' : ''}
+        `}
       style={{ backgroundColor: canDrop && !card ? '#4D4D4DFF' : 'transparent' }}
+      onClick={() => {
+        if (battleStarted && card) {
+          console.log('selectPlayerCard', card)
+          selectPlayerCard(card)
+        }
+      }}
     >
       {cardHover && !card && (
         <CreatureInBoard creature={cardHover} />
