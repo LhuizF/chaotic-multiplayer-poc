@@ -15,7 +15,7 @@ export const CreatureInBoard = ({ creature, cardInBoard, choicePhase }: Creature
   const { removeCard } = useRemoveCard()
 
   return (
-    <div className="flex flex-col items-center justify-between bg-zinc-900 h-full p-1">
+    <div className="flex flex-col aspect-square items-center justify-between bg-zinc-900 p-1">
       {cardInBoard && choicePhase && (
         <button
           className="absolute top-1 left-1 bg-red-600 rounded-full cursor-pointer"
