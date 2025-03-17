@@ -18,6 +18,9 @@ export const MainGame = () => {
     }
   }, [gameMatchInfo.gameStatus])
 
+
+  console.log("duel", gameMatchInfo)
+
   return (
     <DuelContextProvider
       gameService={gameService}
@@ -26,7 +29,12 @@ export const MainGame = () => {
       opponent={opponent}
     >
       <div className="h-full flex items-center justify-evenly">
-        <DisplayPlayer id={opponent.id} name={opponent.name} turn={!isYourTurn} />
+        <DisplayPlayer
+          id={opponent.id}
+          name={opponent.name}
+          turn={!isYourTurn}
+          gameStatus={gameMatchInfo.gameStatus}
+        />
 
         <div className="flex flex-col items-center h-full">
           <OpponentHand />
@@ -34,7 +42,13 @@ export const MainGame = () => {
           <PlayerHand />
         </div>
 
-        <DisplayPlayer id={player.id} name={player.name} turn={isYourTurn} isPlayer />
+        <DisplayPlayer
+          isPlayer
+          id={player.id}
+          name={player.name}
+          turn={isYourTurn}
+          gameStatus={gameMatchInfo.gameStatus}
+        />
       </div>
     </DuelContextProvider >
   )

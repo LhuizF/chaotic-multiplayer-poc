@@ -46,7 +46,7 @@ export interface UpdatePlayerGame {
 }
 
 export interface Duel {
-  [key: string]: {
+  [playerId: string]: {
     creature: CreatureSelected
     attacks: {
       turn: number

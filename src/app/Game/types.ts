@@ -7,8 +7,10 @@ export interface GameMatchInfo {
   player: PlayerInGame
   status: 'waiting' | 'playing' | 'finished'
   isYourTurn: boolean
-  gameStatus: 'choosing_creatures' | 'battle' | 'finished'
+  gameStatus: GameStatus
 }
+
+export type GameStatus = 'choosing_creatures' | 'battle' | 'finished'
 
 export interface PlayerInGame {
   id: string
