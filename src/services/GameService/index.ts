@@ -143,7 +143,13 @@ class GameService implements IGameService {
       };
 
       if (updateGameStatus) {
-        matchUpdate.game.status = 'battle';
+        matchUpdate.game.status = 'select_duel';
+        Object.entries(matchUpdate.game.players).forEach(([key, value]) => {
+          matchUpdate.game.players[key] = {
+            ...value,
+            status: 'battle'
+          }
+        });
       }
 
       await setDoc(matchRef, matchUpdate);
@@ -161,6 +167,7 @@ class GameService implements IGameService {
         ...match,
         game: {
           ...match.game,
+          status: 'duel',
           duels: [
             ...match.game.duels,
             duel

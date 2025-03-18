@@ -10,7 +10,7 @@ export interface GameMatchInfo {
   gameStatus: GameStatus
 }
 
-export type GameStatus = 'choosing_creatures' | 'battle' | 'finished'
+export type GameStatus = 'choosing_creatures' | 'select_duel' | 'duel'
 
 export interface PlayerInGame {
   id: string
@@ -29,4 +29,9 @@ export interface CreatureSelected extends Creature {
 export interface Position {
   row: number
   column: number
+}
+
+export interface Duel {
+  playerCreature: CreatureSelected
+  opponentCreature: CreatureSelected
 }

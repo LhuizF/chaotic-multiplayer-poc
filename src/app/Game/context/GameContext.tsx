@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { IGameService } from "@/services/GameService/IGameService";
-import { GameMatchInfo, PlayerInGame, Position, CreatureSelected } from "../types";
+import { GameMatchInfo, PlayerInGame, Position, CreatureSelected, Duel } from "../types";
 import { GameMatch } from "../../../services/GameService/types";
 
 type GameContextData = {
@@ -11,7 +11,10 @@ type GameContextData = {
   gameService: IGameService;
   getPlayerCardByPosition: (position: Position) => CreatureSelected | null
   getOpponentCardByPosition: (position: Position) => CreatureSelected | null
+  duel: Duel | null
 };
+
+
 
 const defaultPlayer: PlayerInGame = {
   id: '',
@@ -38,7 +41,8 @@ const GameContext = createContext<GameContextData>({
   opponent: defaultPlayer,
   getPlayerCardByPosition: () => null,
   getOpponentCardByPosition: () => null,
-  gameService: {} as IGameService
+  gameService: {} as IGameService,
+  duel: null
 });
 
 interface GameProviderProps {
@@ -51,6 +55,7 @@ interface GameProviderProps {
 function GameContextProvider({ children, gameService, matchId, userId }: GameProviderProps) {
   const [gameMatch, setGameMatch] = useState<GameMatchInfo>(defaultGameMatch);
   const [isLoading, setIsLoading] = useState(true);
+  const [duel, setDuel] = useState<Duel | null>(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -92,6 +97,15 @@ function GameContextProvider({ children, gameService, matchId, userId }: GamePro
         gameStatus: gameData.game.status
       }
 
+      if (gameData.game.status === 'duel') {
+        const duel = {
+          playerCreature: gameData.game.duels[0][userId].creature,
+          opponentCreature: gameData.game.duels[0][opponent.id].creature
+        }
+
+        setDuel(duel);
+      }
+
       setGameMatch(match);
       setIsLoading(false);
     });
@@ -117,7 +131,8 @@ function GameContextProvider({ children, gameService, matchId, userId }: GamePro
       opponent,
       gameService,
       getPlayerCardByPosition,
-      getOpponentCardByPosition
+      getOpponentCardByPosition,
+      duel
     }}>
       {children}
     </GameContext.Provider>

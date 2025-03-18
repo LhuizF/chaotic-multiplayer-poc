@@ -30,6 +30,7 @@ const OpponentSlot = ({ position }: SlotProps) => {
   const { gameStatus } = gameMatchInfo
 
   const cardSelected = opponentCard && card && opponentCard.id === card.id
+  const gameStared = card && (gameStatus === 'duel' || gameStatus === 'select_duel')
 
   return (
     <div className={`border rounded card-slot overflow-hidden
@@ -41,8 +42,7 @@ const OpponentSlot = ({ position }: SlotProps) => {
           <div className="w-1/2 h-2/3 bg-black rounded-full"></div>
         </div>
       }
-      {
-        card && gameStatus === 'battle' &&
+      {gameStared &&
         <div onClick={() => selectOpponentCard(card)} >
           <CreatureInBoard creature={card} />
         </div>

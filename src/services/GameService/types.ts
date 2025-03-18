@@ -31,7 +31,7 @@ interface Game {
   duels: Duel[]
 }
 
-type GameStatus = 'choosing_creatures' | 'battle' | 'finished'
+type GameStatus = 'choosing_creatures' | 'select_duel' | 'duel'
 
 export type GamePlayerStatus = 'choosing_creatures' | 'ready' | 'battle'
 

@@ -45,7 +45,7 @@ export const CardSlot = ({ position }: CardSlotProps) => {
     }
   }, [isOver])
 
-  const battleStarted = gameMatchInfo.gameStatus === 'battle'
+  const battleStarted = gameMatchInfo.gameStatus === 'select_duel'
 
   const cardSelected = playerCard && card && playerCard.id === card.id
 
