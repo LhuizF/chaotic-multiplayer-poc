@@ -15,7 +15,7 @@ export type GameStatus = 'choosing_creatures' | 'select_duel' | 'duel'
 export interface PlayerInGame {
   id: string
   name: string
-  handCards: Creature[]
+  handCreatures: Creature[]
   boardCreatures: CreatureSelected[]
   status: PlayerStatus
 }

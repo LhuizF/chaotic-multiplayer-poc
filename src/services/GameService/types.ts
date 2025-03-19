@@ -23,7 +23,8 @@ interface Game {
   status: GameStatus
   players: {
     [key: string]: {
-      handCards: Creature[]
+      handCreatures: Creature[]
+      handAttacks: Attack[]
       boardCreatures: CreatureSelected[]
       status: GamePlayerStatus
     }
@@ -41,7 +42,7 @@ interface CreatureSelected extends Creature {
 
 export interface UpdatePlayerGame {
   playerId: string
-  handCards: Creature[]
+  handCreatures: Creature[]
   boardCreatures: CreatureSelected[]
 }
 

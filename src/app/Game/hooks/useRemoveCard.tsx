@@ -13,7 +13,7 @@ export const useRemoveCard = () => {
     }
 
     const newBoardCreatures = player.boardCreatures.filter((creature) => creature.id !== cardId);
-    player.handCards.push({
+    player.handCreatures.push({
       id: creature.id,
       name: creature.name,
       power: creature.power,
@@ -24,7 +24,7 @@ export const useRemoveCard = () => {
 
     const playerGame = {
       playerId: player.id,
-      handCards: player.handCards,
+      handCreatures: player.handCreatures,
       boardCreatures: newBoardCreatures,
     }
 

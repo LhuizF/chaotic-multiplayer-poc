@@ -6,7 +6,7 @@ export const PlayerHand = () => {
 
   return (
     <div className="flex justify-center gap-2 h-48 w-full max-w-3xl">
-      {player.handCards.map((creature) =>
+      {player.handCreatures.map((creature) =>
         <CreatureCard key={creature.id} creature={creature} />
       )}
     </div>

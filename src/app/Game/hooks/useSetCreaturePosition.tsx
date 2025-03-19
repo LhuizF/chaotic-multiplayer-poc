@@ -15,7 +15,7 @@ export const useSetCreaturePosition = ({ position }: UseSetCreaturePositionProps
   const { player, gameMatchInfo, gameService } = useGame()
 
   const setCreaturePosition = async (creatureId: string, position: Position) => {
-    const creatureInitial = player.handCards.find((creature) => creature.id === creatureId);
+    const creatureInitial = player.handCreatures.find((creature) => creature.id === creatureId);
 
     if (!creatureInitial) {
       toast.error('Erro: carta não encontrada na mão do jogador');
@@ -39,11 +39,11 @@ export const useSetCreaturePosition = ({ position }: UseSetCreaturePositionProps
     }
 
     player.boardCreatures.push({ ...creatureInitial, position });
-    const newPlayerHand = player.handCards.filter((creature) => creature.id !== creatureId);
+    const newPlayerHand = player.handCreatures.filter((creature) => creature.id !== creatureId);
 
     const playerGame = {
       playerId: player.id,
-      handCards: newPlayerHand,
+      handCreatures: newPlayerHand,
       boardCreatures: player.boardCreatures
     }
 

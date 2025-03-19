@@ -20,7 +20,7 @@ const defaultPlayer: PlayerInGame = {
   id: '',
   name: '',
   status: 'choosing_creatures',
-  handCards: [],
+  handCreatures: [],
   boardCreatures: []
 }
 
@@ -75,14 +75,14 @@ function GameContextProvider({ children, gameService, matchId, userId }: GamePro
       const player: PlayerInGame = {
         id: userId,
         name: gameData.players[userId].playerName,
-        handCards: gameData.game.players[userId].handCards,
+        handCreatures: gameData.game.players[userId].handCreatures,
         boardCreatures: gameData.game.players[userId].boardCreatures,
         status: gameData.game.players[userId].status
       };
       const opponentPlayer: PlayerInGame = {
         id: opponent.id,
         name: opponent.playerName,
-        handCards: gameData.game.players[opponent.id].handCards,
+        handCreatures: gameData.game.players[opponent.id].handCreatures,
         boardCreatures: gameData.game.players[opponent.id].boardCreatures,
         status: gameData.game.players[opponent.id].status
       };
