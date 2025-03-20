@@ -1,45 +1,41 @@
 import { useDrag } from "react-dnd"
-import { Creature } from "@/cards/creatures"
-import { FaRegHeart } from "react-icons/fa"
+import { Attack } from "@/cards/attacks"
+import { TbSword } from "react-icons/tb"
 
 interface CreatureCardProps {
-  creature: Creature
+  attack: Attack
 }
 
-export const CreatureCard = ({ creature }: CreatureCardProps) => {
+export const AttackCard = ({ attack }: CreatureCardProps) => {
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'CARD',
+    type: 'CARD_ATTACK',
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
-    item: creature
+    item: attack
   }))
 
   const visibility = isDragging ? 'hidden' : 'visible'
 
   return (
     <div
-      key={creature.id}
+      key={attack.id}
       ref={drag}
       style={{ visibility }}
       className="flex flex-col items-center justify-between p-2 rounded border bg-gray-700 hover:border-red-500"
     >
-      <p className="text-sm font-semibold">{creature.name}</p>
+      <p className="text-sm font-semibold">{attack.name}</p>
       <div className="flex items-center justify-center w-30 h-30 border border-gray-200 rounded">
         <img
-          src={creature.image}
-          alt={creature.name}
+          src={attack.image}
+          alt={attack.name}
           className="object-cover max-h-full max-w-full"
         />
       </div>
       <div className="flex gap-2">
-        {/* <div className="flex items-center justify-center gap-1">
+        <div className="flex items-center justify-center gap-1">
           <TbSword />
-          <p>{creature.power}</p>
-        </div> */}
-        <div className="flex items-center justify-center gap-1 text-red-600">
-          <FaRegHeart />
-          <p>{creature.health}</p>
+          <p>{attack.damage}</p>
         </div>
       </div>
     </div>

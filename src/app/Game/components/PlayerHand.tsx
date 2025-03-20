@@ -1,8 +1,19 @@
 import { CreatureCard } from './CreatureCard';
 import { useGame } from "../context/GameContext";
+import { AttackCard } from './AttackCard';
 
 export const PlayerHand = () => {
-  const { player } = useGame()
+  const { player, gameMatchInfo } = useGame()
+
+  if (gameMatchInfo.gameStatus === 'duel') {
+    return (
+      <div className="flex justify-center gap-2 h-48 w-full max-w-3xl">
+        {player.handAttacks.map((attack) =>
+          <AttackCard key={attack.id} attack={attack} />
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className="flex justify-center gap-2 h-48 w-full max-w-3xl">
