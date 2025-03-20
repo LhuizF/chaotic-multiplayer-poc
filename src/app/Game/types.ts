@@ -1,4 +1,5 @@
 import { Creature } from "@/cards/creatures"
+import { Attack } from "@/cards/attacks"
 
 export interface GameMatchInfo {
   id: string
@@ -16,6 +17,7 @@ export interface PlayerInGame {
   id: string
   name: string
   handCreatures: Creature[]
+  handAttacks: Attack[]
   boardCreatures: CreatureSelected[]
   status: PlayerStatus
 }

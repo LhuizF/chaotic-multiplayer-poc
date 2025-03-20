@@ -1,3 +1,5 @@
+import { Element } from './elements';
+
 export interface Creature {
   id: string;
   name: string;
@@ -6,8 +8,6 @@ export interface Creature {
   element: Element;
   power: number;
 }
-
-export type Element = 'Fire' | 'Water' | 'Earth' | 'Air';
 
 export const creatures: Creature[] = [
   {

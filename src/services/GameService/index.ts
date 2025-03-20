@@ -1,12 +1,14 @@
 import { Firestore, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { Creature, creatures } from '@/cards/creatures'
+import { Attack, attacks } from '@/cards/attacks'
 import { IGameService } from './IGameService';
 import { Duel, GameMatch, Player, UpdatePlayerGame } from "./types";
 
 class GameService implements IGameService {
-  private readonly collectionName = 'gameMatches';
+  private readonly collectionName = 'game-matches';
   private readonly inicialCreatures: Creature[] = creatures
+  private readonly inicialAttacks: Attack[] = attacks
 
   constructor(private readonly firestore: Firestore) {}
 
@@ -23,7 +25,8 @@ class GameService implements IGameService {
         status: 'choosing_creatures',
         players: {
           [player.id]: {
-            handCards: this.inicialCreatures,
+            handAttacks: [],
+            handCreatures: this.inicialCreatures,
             boardCreatures: [],
             status: 'choosing_creatures'
           }
@@ -67,7 +70,8 @@ class GameService implements IGameService {
             players: {
               ...gameMatch.game.players,
               [player.id]: {
-                handCards: this.inicialCreatures,
+                handCreatures: this.inicialCreatures,
+                handAttacks: [],
                 boardCreatures: [],
                 status: 'choosing_creatures'
               }
@@ -101,7 +105,7 @@ class GameService implements IGameService {
             ...match.game.players,
             [playerGame.playerId]: {
               ...match.game.players[playerGame.playerId],
-              handCards: playerGame.handCards,
+              handCreatures: playerGame.handCreatures,
               boardCreatures: playerGame.boardCreatures,
             }
           }
@@ -135,7 +139,8 @@ class GameService implements IGameService {
             ...match.game.players,
             [playerId]: {
               boardCreatures: match.game.players[playerId].boardCreatures,
-              handCards: [],
+              handCreatures: [],
+              handAttacks: [],
               status: 'ready'
             }
           }
@@ -163,7 +168,7 @@ class GameService implements IGameService {
     if (matchSnapshot.exists()) {
       const match = matchSnapshot.data() as GameMatch;
 
-      await setDoc(matchRef, {
+      const updateGameMatch: GameMatch = {
         ...match,
         game: {
           ...match.game,
@@ -173,10 +178,28 @@ class GameService implements IGameService {
             duel
           ]
         }
-      });
+      }
+
+      Object.entries(updateGameMatch.game.players).map(([key, value]) => {
+        updateGameMatch.game.players[key] = {
+          ...value,
+          handAttacks: this.shuffleCards(this.inicialAttacks),
+        }
+      })
+
+      await setDoc(matchRef, updateGameMatch);
     }
   }
 
+  private shuffleCards<T>(array: T[]): T[] {
+    const shuffled = [...array]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+
+    return shuffled;
+  }
 }
 
 export const gameService = new GameService(firestore)
