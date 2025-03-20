@@ -28,6 +28,7 @@ class GameService implements IGameService {
             handAttacks: [],
             handCreatures: this.inicialCreatures,
             boardCreatures: [],
+            deck: [],
             status: 'choosing_creatures'
           }
         },
@@ -73,6 +74,7 @@ class GameService implements IGameService {
                 handCreatures: this.inicialCreatures,
                 handAttacks: [],
                 boardCreatures: [],
+                deck: [],
                 status: 'choosing_creatures'
               }
             }
@@ -141,6 +143,7 @@ class GameService implements IGameService {
               boardCreatures: match.game.players[playerId].boardCreatures,
               handCreatures: [],
               handAttacks: [],
+              deck: [],
               status: 'ready'
             }
           }
@@ -181,9 +184,11 @@ class GameService implements IGameService {
       }
 
       Object.entries(updateGameMatch.game.players).map(([key, value]) => {
+        const { hand, deck } = this.initializePlayerDeck()
         updateGameMatch.game.players[key] = {
           ...value,
-          handAttacks: this.shuffleCards(this.inicialAttacks),
+          handAttacks: hand,
+          deck: deck
         }
       })
 
@@ -191,14 +196,18 @@ class GameService implements IGameService {
     }
   }
 
-  private shuffleCards<T>(array: T[]): T[] {
-    const shuffled = [...array]
+  private initializePlayerDeck() {
+    const shuffled = [...this.inicialAttacks]
+
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
     }
 
-    return shuffled;
+    const hand = shuffled.slice(0, 2)
+    const deck = shuffled.slice(2)
+
+    return { hand, deck }
   }
 }
 

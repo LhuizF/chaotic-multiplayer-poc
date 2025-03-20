@@ -17,8 +17,9 @@ export interface PlayerInGame {
   id: string
   name: string
   handCreatures: Creature[]
-  handAttacks: Attack[]
   boardCreatures: CreatureSelected[]
+  handAttacks: Attack[]
+  deck: Attack[]
   status: PlayerStatus
 }
 

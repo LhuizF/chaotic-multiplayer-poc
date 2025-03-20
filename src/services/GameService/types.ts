@@ -22,12 +22,7 @@ type MatchStatus = 'waiting' | 'playing' | 'finished'
 interface Game {
   status: GameStatus
   players: {
-    [key: string]: {
-      handCreatures: Creature[]
-      handAttacks: Attack[]
-      boardCreatures: CreatureSelected[]
-      status: GamePlayerStatus
-    }
+    [key: string]: playerGame
   }
   duels: Duel[]
 }
@@ -55,4 +50,12 @@ export interface Duel {
       damage: number
     }[]
   }
+}
+
+interface playerGame {
+  handCreatures: Creature[]
+  handAttacks: Attack[]
+  deck: Attack[]
+  boardCreatures: CreatureSelected[]
+  status: GamePlayerStatus
 }
