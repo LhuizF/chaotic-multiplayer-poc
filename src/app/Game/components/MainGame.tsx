@@ -6,6 +6,7 @@ import { DisplayPlayer } from "./DisplayPlayer";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { DuelContextProvider } from "../context/DuelContext";
+import { DisplayOpponent } from "./DisplayOpponent";
 
 export const MainGame = () => {
   const { player, opponent, gameMatchInfo, gameService } = useGame()
@@ -26,8 +27,7 @@ export const MainGame = () => {
       opponent={opponent}
     >
       <div className="h-full flex items-center justify-evenly">
-        <DisplayPlayer
-          id={opponent.id}
+        <DisplayOpponent
           name={opponent.name}
           turn={!isYourTurn}
           gameStatus={gameMatchInfo.gameStatus}
@@ -40,7 +40,6 @@ export const MainGame = () => {
         </div>
 
         <DisplayPlayer
-          isPlayer
           id={player.id}
           name={player.name}
           turn={isYourTurn}

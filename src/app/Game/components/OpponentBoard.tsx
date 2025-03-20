@@ -22,7 +22,7 @@ interface SlotProps {
 }
 
 const OpponentSlot = ({ position }: SlotProps) => {
-  const { getOpponentCardByPosition, gameMatchInfo } = useGame()
+  const { getOpponentCardByPosition, gameMatchInfo, } = useGame()
   const { playerCard, opponentCard, selectOpponentCard } = useDuel()
 
   const card = getOpponentCardByPosition(position)
@@ -43,7 +43,9 @@ const OpponentSlot = ({ position }: SlotProps) => {
         </div>
       }
       {gameStared &&
-        <div onClick={() => selectOpponentCard(card)} >
+        <div onClick={() => {
+          if (gameMatchInfo.isYourTurn) selectOpponentCard(card)
+        }} >
           <CreatureInBoard creature={card} />
         </div>
       }
