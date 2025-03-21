@@ -114,6 +114,8 @@ function GameContextProvider({ children, gameService, matchId, userId }: GamePro
         }
 
         setDuel(duel);
+      } else {
+        setDuel(null);
       }
 
       setGameMatch(match);

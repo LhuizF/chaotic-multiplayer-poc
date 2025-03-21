@@ -13,11 +13,11 @@ export const MainGame = () => {
 
   const isYourTurn = gameMatchInfo.isYourTurn
 
-  useEffect(() => {
-    if (gameMatchInfo.gameStatus === "select_duel") {
-      toast.info("Batalha iniciada!")
-    }
-  }, [gameMatchInfo.gameStatus])
+  // useEffect(() => {
+  //   if (gameMatchInfo.gameStatus === "select_duel") {
+  //     toast.info("Batalha iniciada!")
+  //   }
+  // }, [gameMatchInfo.gameStatus])
 
   return (
     <DuelContextProvider

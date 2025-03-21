@@ -245,6 +245,22 @@ class GameService implements IGameService {
 
       updateGameMatch.game.duels[updateGameMatch.game.duels.length - 1] = currentDuel
 
+      if (updatePlayerDuel.opponent.creature.health === 0) {
+        updateGameMatch.game.status = 'select_duel'
+
+        const newUserTurn = updateGameMatch.playerTurn === updatePlayerDuel.playerId
+          ? updatePlayerDuel.opponent.id
+          : updatePlayerDuel.playerId
+
+        updateGameMatch.playerTurn = newUserTurn
+
+        const opponentBoard = updateGameMatch.game.players[updatePlayerDuel.opponent.id].boardCreatures
+
+        const newBoard = opponentBoard.filter(creature => creature.id !== updatePlayerDuel.opponent.creature.id)
+
+        updateGameMatch.game.players[updatePlayerDuel.opponent.id].boardCreatures = newBoard
+      }
+
       await setDoc(matchRef, updateGameMatch);
     }
   }

@@ -17,15 +17,10 @@ export const useAttack = () => {
       toast.error('Selecione um alvo para atacar')
       return
     }
-    const newHealth = creatureTarget.health - attack.damage
+    const calculatedHealth = creatureTarget.health - attack.damage
 
-    console.log('newHealth', newHealth)
+    const newHealth = calculatedHealth < 0 ? 0 : calculatedHealth
 
-    if (newHealth <= 0) {
-      toast.success('Criatura derrotada')
-      // vai encerrar o duelo
-      return
-    }
     const newOpponentCreature = { ...creatureTarget, health: newHealth }
 
     const playerHandAttacks = player.handAttacks.filter(handAttack => handAttack.id !== attack.id)
