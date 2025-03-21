@@ -53,11 +53,9 @@ function DuelContextProvider({ children, gameService, matchId, opponent, player 
     const newDuel = {
       [player.id]: {
         creature: playerCard,
-        attacks: []
       },
       [opponent.id]: {
         creature: opponentCard,
-        attacks: []
       }
     }
 

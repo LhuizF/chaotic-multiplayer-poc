@@ -1,4 +1,5 @@
-import { GameMatch, Player, UpdatePlayerGame, Duel } from "./types";
+import { GameMatch, Player, PlayersDuel, UpdatePlayerGame } from "./types";
+import { UpdatePlayerDuel } from './dtos/UpdatePlayerDuel.dto'
 
 export interface IGameService {
   createGameMatch(matchId: string, player: Player): Promise<void>;
@@ -7,5 +8,6 @@ export interface IGameService {
   listenGame(matchId: string, callback: (gameData: GameMatch) => void): () => void;
   updatePlayerGame(matchId: string, playerGame: UpdatePlayerGame): Promise<void>;
   finishChoicePhase(matchId: string, playerId: string, updateGameStatus: boolean): Promise<void>;
-  startNewDuel(matchId: string, duel: Duel): Promise<void>;
+  startNewDuel(matchId: string, playersDuel: PlayersDuel): Promise<void>;
+  updatePlayerDuel(matchId: string, updatePlayerDuel: UpdatePlayerDuel): Promise<void>;
 }

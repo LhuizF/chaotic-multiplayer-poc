@@ -37,4 +37,5 @@ export interface Position {
 export interface Duel {
   playerCreature: CreatureSelected
   opponentCreature: CreatureSelected
+  rounds: any[] //TODO: create DuelRound type
 }

@@ -3,7 +3,8 @@ import { firestore } from '../firebase';
 import { Creature, creatures } from '@/cards/creatures'
 import { Attack, attacks } from '@/cards/attacks'
 import { IGameService } from './IGameService';
-import { Duel, GameMatch, Player, UpdatePlayerGame } from "./types";
+import { GameMatch, Player, PlayersDuel, UpdatePlayerGame } from "./types";
+import { UpdatePlayerDuel } from './dtos/UpdatePlayerDuel.dto'
 
 class GameService implements IGameService {
   private readonly collectionName = 'game-matches';
@@ -164,12 +165,17 @@ class GameService implements IGameService {
     }
   }
 
-  async startNewDuel(matchId: string, duel: Duel): Promise<void> {
+  async startNewDuel(matchId: string, playersDuel: PlayersDuel): Promise<void> {
     const matchRef = doc(this.firestore, this.collectionName, matchId);
     const matchSnapshot = await getDoc(matchRef);
 
     if (matchSnapshot.exists()) {
       const match = matchSnapshot.data() as GameMatch;
+
+      const newDuel = {
+        players: playersDuel,
+        rounds: []
+      }
 
       const updateGameMatch: GameMatch = {
         ...match,
@@ -178,7 +184,7 @@ class GameService implements IGameService {
           status: 'duel',
           duels: [
             ...match.game.duels,
-            duel
+            newDuel
           ]
         }
       }
@@ -208,6 +214,39 @@ class GameService implements IGameService {
     const deck = shuffled.slice(2)
 
     return { hand, deck }
+  }
+
+  async updatePlayerDuel(matchId: string, updatePlayerDuel: UpdatePlayerDuel): Promise<void> {
+    const matchRef = doc(this.firestore, this.collectionName, matchId);
+    const matchSnapshot = await getDoc(matchRef);
+
+    if (matchSnapshot.exists()) {
+      const match = matchSnapshot.data() as GameMatch;
+
+      const updateGameMatch: GameMatch = { ...match }
+
+      updateGameMatch.game.players[updatePlayerDuel.playerId] = updatePlayerDuel.player
+
+      if (updatePlayerDuel.player.handAttacks.length === 0) {
+        const { hand, deck } = this.initializePlayerDeck()
+        updateGameMatch.game.players[updatePlayerDuel.playerId] = {
+          ...updatePlayerDuel.player,
+          handAttacks: hand,
+          deck: deck
+        }
+      }
+
+      const currentDuel = updateGameMatch.game.duels[updateGameMatch.game.duels.length - 1]
+      currentDuel.rounds.push(updatePlayerDuel.duelRound)
+
+      currentDuel.players[updatePlayerDuel.opponent.id] = {
+        creature: updatePlayerDuel.opponent.creature
+      }
+
+      updateGameMatch.game.duels[updateGameMatch.game.duels.length - 1] = currentDuel
+
+      await setDoc(matchRef, updateGameMatch);
+    }
   }
 }
 

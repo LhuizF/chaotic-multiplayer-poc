@@ -1,8 +1,10 @@
 import { OpponentBoard } from './OpponentBoard'
 import { PlayerBoard } from './PlayerBoard'
 import { Duel } from './Duel'
+import { useGame } from '../context/GameContext'
 
 export const Board = () => {
+  const { duel } = useGame()
 
   return (
     <div className="flex flex-1 items-center">
@@ -10,7 +12,7 @@ export const Board = () => {
         <PlayerBoard />
         <OpponentBoard />
 
-        <Duel />
+        {!!duel && <Duel />}
       </div>
     </div>
   )
