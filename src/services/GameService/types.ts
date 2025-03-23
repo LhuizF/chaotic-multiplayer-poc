@@ -34,6 +34,7 @@ export interface CreatureSelected extends Creature {
 export interface Duel {
   rounds: DuelRound[];
   players: Record<string, PlayerDuel>
+  playerTurnId: string
 }
 
 interface PlayerDuel {

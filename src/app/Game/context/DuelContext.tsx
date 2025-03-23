@@ -60,7 +60,9 @@ function DuelContextProvider({ children, gameService, matchId, opponent, player 
     }
 
     try {
-      await gameService.startNewDuel(matchId, newDuel)
+      await gameService.startNewDuel(matchId, newDuel, player.id)
+      setPlayerCard(null)
+      setOpponentCard(null)
       toast.success('Duelo iniciado')
     } catch (error) {
       console.error(error)

@@ -38,4 +38,5 @@ export interface Duel {
   playerCreature: CreatureSelected
   opponentCreature: CreatureSelected
   rounds: any[] //TODO: create DuelRound type
+  playerTurn: boolean
 }
