@@ -3,21 +3,11 @@ import { PlayerHand } from './PlayerHand'
 import { OpponentHand } from './OpponentHand'
 import { useGame } from "../context/GameContext";
 import { DisplayPlayer } from "./DisplayPlayer";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
 import { DuelContextProvider } from "../context/DuelContext";
 import { DisplayOpponent } from "./DisplayOpponent";
 
 export const MainGame = () => {
-  const { player, opponent, gameMatchInfo, gameService } = useGame()
-
-  const isYourTurn = gameMatchInfo.isYourTurn
-
-  // useEffect(() => {
-  //   if (gameMatchInfo.gameStatus === "select_duel") {
-  //     toast.info("Batalha iniciada!")
-  //   }
-  // }, [gameMatchInfo.gameStatus])
+  const { player, opponent, gameMatchInfo, gameService, duel } = useGame()
 
   return (
     <DuelContextProvider
@@ -29,7 +19,7 @@ export const MainGame = () => {
       <div className="h-full flex items-center justify-evenly">
         <DisplayOpponent
           name={opponent.name}
-          turn={!isYourTurn}
+          turn={!gameMatchInfo.isYourTurn}
           gameStatus={gameMatchInfo.gameStatus}
         />
 
@@ -42,8 +32,9 @@ export const MainGame = () => {
         <DisplayPlayer
           id={player.id}
           name={player.name}
-          turn={isYourTurn}
+          chooseTurn={gameMatchInfo.isYourTurn}
           gameStatus={gameMatchInfo.gameStatus}
+          duelTurn={!!duel?.playerTurn && gameMatchInfo.gameStatus === 'duel'}
         />
       </div>
     </DuelContextProvider >
