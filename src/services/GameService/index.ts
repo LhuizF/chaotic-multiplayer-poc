@@ -262,6 +262,11 @@ class GameService implements IGameService {
         const newBoard = opponentBoard.filter(creature => creature.id !== updatePlayerDuel.opponent.creature.id)
 
         updateGameMatch.game.players[updatePlayerDuel.opponent.id].boardCreatures = newBoard
+
+        if (newBoard.length === 0) {
+          updateGameMatch.playerWinner = updateGameMatch.players[updatePlayerDuel.playerId]
+          updateGameMatch.status = 'finished'
+        }
       }
 
       await setDoc(matchRef, updateGameMatch);

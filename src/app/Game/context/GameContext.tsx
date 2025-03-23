@@ -33,7 +33,8 @@ const defaultGameMatch: GameMatchInfo = {
   opponent: defaultPlayer,
   status: 'waiting',
   isYourTurn: false,
-  gameStatus: 'choosing_creatures'
+  gameStatus: 'choosing_creatures',
+  playerWinner: null
 };
 
 const GameContext = createContext<GameContextData>({
@@ -101,7 +102,15 @@ function GameContextProvider({ children, gameService, matchId, userId }: GamePro
         opponent: opponentPlayer,
         status: gameData.status,
         isYourTurn,
-        gameStatus: gameData.game.status
+        gameStatus: gameData.game.status,
+        playerWinner: null
+      }
+
+      if (gameData.playerWinner) {
+        match.playerWinner = {
+          id: gameData.playerWinner.id,
+          name: gameData.playerWinner.playerName
+        }
       }
 
       const currentDuel = gameData.game.duels[gameData.game.duels.length - 1];

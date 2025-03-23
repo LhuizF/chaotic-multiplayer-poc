@@ -9,6 +9,11 @@ export interface GameMatchInfo {
   status: 'waiting' | 'playing' | 'finished'
   isYourTurn: boolean
   gameStatus: GameStatus
+
+  playerWinner: {
+    id: string
+    name: string
+  } | null
 }
 
 export type GameStatus = 'choosing_creatures' | 'select_duel' | 'duel'

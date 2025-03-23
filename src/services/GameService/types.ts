@@ -8,6 +8,7 @@ export interface GameMatch {
   status: MatchStatus
   playerTurn: string
   game: Game
+  playerWinner?: Player
 }
 
 export interface Player {

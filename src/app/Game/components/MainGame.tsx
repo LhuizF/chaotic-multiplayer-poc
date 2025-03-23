@@ -5,9 +5,14 @@ import { useGame } from "../context/GameContext";
 import { DisplayPlayer } from "./DisplayPlayer";
 import { DuelContextProvider } from "../context/DuelContext";
 import { DisplayOpponent } from "./DisplayOpponent";
+import { Navigate } from 'react-router-dom'
 
 export const MainGame = () => {
   const { player, opponent, gameMatchInfo, gameService, duel } = useGame()
+
+  if (gameMatchInfo.status === 'finished') {
+    return <Navigate to={`/result/${gameMatchInfo.id}`} />
+  }
 
   return (
     <DuelContextProvider

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { IGameService } from "@/services/GameService/IGameService";
+import { useNavigate } from 'react-router-dom'
 
 interface UseGameListenerProps {
   matchId: string;
@@ -10,6 +11,8 @@ interface UseGameListenerProps {
 export function useGameStarted({ matchId, userId, gameService }: UseGameListenerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const getGame = async () => {
@@ -25,6 +28,11 @@ export function useGameStarted({ matchId, userId, gameService }: UseGameListener
         if (!gameData) {
           setError('Partida não encontrada');
           return;
+        }
+
+        if (gameData.status === 'finished') {
+          navigate(`/result/${gameData.id}`)
+          return
         }
 
         if (!gameData.players?.[userId]) {
