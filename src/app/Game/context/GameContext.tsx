@@ -107,10 +107,11 @@ function GameContextProvider({ children, gameService, matchId, userId }: GamePro
       const currentDuel = gameData.game.duels[gameData.game.duels.length - 1];
 
       if (gameData.game.status === 'duel') {
-        const duel = {
+        const duel: Duel = {
           playerCreature: currentDuel.players[userId].creature,
           opponentCreature: currentDuel.players[opponent.id].creature,
-          rounds: currentDuel.rounds
+          rounds: currentDuel.rounds,
+          playerTurn: currentDuel.playerTurnId === userId
         }
 
         setDuel(duel);

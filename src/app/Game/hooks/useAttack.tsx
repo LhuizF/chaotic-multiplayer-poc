@@ -12,7 +12,7 @@ export const useAttack = () => {
   const { duel, player, opponent, gameMatchInfo, gameService } = useGame();
 
   const attackCreature = async (attack: Attack, creatureTarget: CreatureSelected) => {
-    console.log(duel?.rounds)
+
     if (!creatureTarget) {
       toast.error('Selecione um alvo para atacar')
       return

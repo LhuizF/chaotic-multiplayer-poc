@@ -49,11 +49,13 @@ export const CardSlot = ({ position }: CardSlotProps) => {
 
   const cardSelected = playerCard && card && playerCard.id === card.id
 
+  const cardHoverCondition = battleStarted && !playerCard && gameMatchInfo.isYourTurn && card
+
   return (
     <div
       ref={drop}
       className={`border rounded relative card-slot overflow-hidden
-        ${battleStarted && !playerCard && gameMatchInfo.isYourTurn ? 'hover:border-blue-500' : ''}
+        ${cardHoverCondition ? 'hover:border-blue-500' : ''}
         ${cardSelected ? 'border-red-500 hover:border-red-500' : ''}
         `}
       style={{ backgroundColor: canDrop && !card ? '#4D4D4DFF' : 'transparent' }}

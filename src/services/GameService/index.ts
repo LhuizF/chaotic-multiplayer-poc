@@ -165,7 +165,7 @@ class GameService implements IGameService {
     }
   }
 
-  async startNewDuel(matchId: string, playersDuel: PlayersDuel): Promise<void> {
+  async startNewDuel(matchId: string, playersDuel: PlayersDuel, playerTurnId: string): Promise<void> {
     const matchRef = doc(this.firestore, this.collectionName, matchId);
     const matchSnapshot = await getDoc(matchRef);
 
@@ -174,7 +174,8 @@ class GameService implements IGameService {
 
       const newDuel = {
         players: playersDuel,
-        rounds: []
+        rounds: [],
+        playerTurnId
       }
 
       const updateGameMatch: GameMatch = {
@@ -242,6 +243,8 @@ class GameService implements IGameService {
       currentDuel.players[updatePlayerDuel.opponent.id] = {
         creature: updatePlayerDuel.opponent.creature
       }
+
+      currentDuel.playerTurnId = updatePlayerDuel.opponent.id
 
       updateGameMatch.game.duels[updateGameMatch.game.duels.length - 1] = currentDuel
 

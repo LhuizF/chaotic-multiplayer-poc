@@ -8,6 +8,6 @@ export interface IGameService {
   listenGame(matchId: string, callback: (gameData: GameMatch) => void): () => void;
   updatePlayerGame(matchId: string, playerGame: UpdatePlayerGame): Promise<void>;
   finishChoicePhase(matchId: string, playerId: string, updateGameStatus: boolean): Promise<void>;
-  startNewDuel(matchId: string, playersDuel: PlayersDuel): Promise<void>;
+  startNewDuel(matchId: string, playersDuel: PlayersDuel, playerTurnId: string): Promise<void>;
   updatePlayerDuel(matchId: string, updatePlayerDuel: UpdatePlayerDuel): Promise<void>;
 }
