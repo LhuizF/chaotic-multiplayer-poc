@@ -8,7 +8,7 @@ interface CreatureCardProps {
 }
 
 export const AttackCard = ({ attack, isPlayerTurn }: CreatureCardProps) => {
-  console.log(isPlayerTurn)
+
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'CARD_ATTACK',
     collect: (monitor) => ({
