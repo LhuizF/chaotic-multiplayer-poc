@@ -53,14 +53,14 @@ export const attacks: Attack[] = [
   },
   {
     id: '7',
-    name: '',
+    name: 'Flecha de Luz',
     damage: 50,
-    image: '/src/assets/attacks/',
-    element: ''
+    image: '/src/assets/attacks/arrow_of_light.jpg',
+    element: 'Air'
   },
   {
     id: '8',
-    name: 'Flecha de Luz',
+    name: 'Flecha de Luz teste',
     damage: 50,
     image: '/src/assets/attacks/arrow_of_light.jpg',
     element: 'Air'
