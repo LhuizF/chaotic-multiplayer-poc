@@ -77,10 +77,10 @@ export const CardSlot = ({ position }: CardSlotProps) => {
         />
       )}
 
-      <p className="absolute bottom-0 right-0 text-xs text-gray-400">
+      {/* <p className="absolute bottom-0 right-0 text-xs text-gray-400">
         coluna: {position.column} <br />
         linha: {position.row}
-      </p>
+      </p> */}
     </div>
   )
 }
