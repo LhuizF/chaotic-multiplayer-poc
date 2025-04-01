@@ -1,4 +1,9 @@
 import { Element } from './elements';
+import dragonImage from '@/assets/creatures/dragon.png';
+import werewolfImage from '@/assets/creatures/werewolf.png';
+import turtleImage from '@/assets/creatures/turtle.png';
+import eagleImage from '@/assets/creatures/eagle.png';
+import skeletonImage from '@/assets/creatures/skeleton.png';
 
 export interface Creature {
   id: string;
@@ -15,7 +20,7 @@ export const creatures: Creature[] = [
     name: 'Dragão negro',
     element: 'Fire',
     health: 80,
-    image: '/src/assets/creatures/dragon.png',
+    image: dragonImage,
     power: 20
   },
   {
@@ -23,7 +28,7 @@ export const creatures: Creature[] = [
     name: 'Lobisomem',
     element: 'Earth',
     health: 80,
-    image: '/src/assets/creatures/werewolf.png',
+    image: werewolfImage,
     power: 20
   },
   {
@@ -31,7 +36,7 @@ export const creatures: Creature[] = [
     name: 'Tartaruga',
     element: 'Water',
     health: 80,
-    image: '/src/assets/creatures/turtle.png',
+    image: turtleImage,
     power: 20
   },
   {
@@ -39,7 +44,7 @@ export const creatures: Creature[] = [
     name: 'Águia',
     element: 'Air',
     health: 80,
-    image: '/src/assets/creatures/eagle.png',
+    image: eagleImage,
     power: 20
   },
   {
@@ -47,7 +52,7 @@ export const creatures: Creature[] = [
     name: 'Esqueleto',
     element: 'Earth',
     health: 80,
-    image: '/src/assets/creatures/skeleton.png',
+    image: skeletonImage,
     power: 20
   },
 ]
